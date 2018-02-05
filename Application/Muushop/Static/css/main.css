@@ -67,6 +67,31 @@ body {
             background: #ff6600;
             color: #fff; }
 
+.cats-screen {
+  background: #fff;
+  padding: 10px 5px;
+  margin-bottom: 10px;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+  border-radius: 2px;
+  -webkit-transition: all 0.4s ease;
+  transition: all 0.4s ease; }
+  .cats-screen .f-sort {
+    float: left;
+    margin-right: 24px; }
+    .cats-screen .f-sort a.active {
+      background: #e4393c;
+      color: #FFF;
+      border-color: #e4393c; }
+    .cats-screen .f-sort a {
+      float: left;
+      padding: 0 10px;
+      height: 23px;
+      border: 1px solid #ddd;
+      line-height: 23px;
+      margin-right: -1px;
+      background: #FFF;
+      color: #333; }
+
 #topCatsModal .modal-dialog {
   background: rgba(0, 0, 0, 0.6); }
 #topCatsModal .modal-header {

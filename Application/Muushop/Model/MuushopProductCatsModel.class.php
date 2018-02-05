@@ -179,7 +179,54 @@ class MuushopProductCatsModel extends Model{
 
 		return $ret;
 	}
+	/**
+	 * 排序完整URL数组
+	 * 
+	 * @return [type] [description]
+	 */
+	public function sort_url($sort){
 
+		$sort_param = array(
+			'all'=>'all',
+			'sell_cnt'=>'sell_cnt_desc',
+			'price'=>'price_desc',
+			'comment_cnt'=>'comment_cnt_desc',
+			'create_time'=>'create_time_desc'
+		);
+		
+		switch ($sort)
+		{
+		case 'sell_cnt_desc':
+		  $sort_param['sell_cnt']='sell_cnt_asc';
+		  break;  
+		case 'sell_cnt_asc':
+		  $sort_param['sell_cnt']='sell_cnt_desc';
+		  break;
+		case 'price_desc':
+		  $sort_param['price']='price_asc';
+		  break;  
+		case 'price_asc':
+		  $sort_param['price']='price_desc';
+		  break;
+		case 'comment_cnt_desc':
+		  $sort_param['comment_cnt']='comment_cnt_asc';
+		  break;  
+		case 'comment_cnt_asc':
+		  $sort_param['comment_cnt']='comment_cnt_desc';
+		  break;
+		case 'create_time_desc':
+		  $sort_param['create_time']='create_time_asc';
+		  break;  
+		case 'create_time_asc':
+		  $sort_param['create_time']='create_time_desc';
+		  break;
+		}
+		$sort_url = array();
+		foreach($sort_param as $k=>$v){
+			$sort_url[$k] = U('Muushop/index/cats',array('sort'=>$v));
+		}
+		return $sort_url;
+	}
 
 
 }

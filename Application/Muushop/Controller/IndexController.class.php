@@ -59,27 +59,58 @@ class IndexController extends PublicController {
 
 	public function cats()
 	{
-		$page = I('page',1,'intval');;
+		//排序方式：
+		//价格 price_desc,price_asc格式
+		//销量 sell_cnt_desc,sell_cnt_asc
+		//评论数 comment_cnt_desc,comment_cnt_asc
+		//上架时间 create_time_desc create_time_asc
+		$sort = I('get.sort','','text');
+		//严谨点做个判断，这种写法有点醉了~~
+		if( $sort == 'price_desc'     || 
+			$sort=='price_asc'        || 
+			$sort=='sell_cnt_desc'    || 
+			$sort=='sell_cnt_asc'     ||
+			$sort=='comment_cnt_desc' || 
+			$sort=='comment_cnt_asc'  ||
+			$sort=='create_time_desc' || 
+			$sort=='create_time_asc'
+		){
+			$sort_arr = explode('_',$sort);
+			if($sort_arr[0]==='price'){
+				$order = $sort_arr[0].' '.$sort_arr[1];
+			}else{
+				$order = $sort_arr[0].'_'.$sort_arr[1].' '.$sort_arr[2];
+			}
+		}else{
+			$sort='all';
+			$order = 'id desc,create_time desc';
+		}
+
+		$sort_url = $this->product_cats_model->sort_url($sort);//获取排序完整URL
+
+		$page = I('page',1,'intval');
 		$r = $this->list_num;
 		$id = I('id',0,'intval');
 		$all_son_id = $this->product_cats_model->get_all_cat_id_by_pid($id);
-		//dump($all_son_id);exit;
 		$map['cat_id'] = array('in',$all_son_id);
 		$map['status']=1;
         /* 获取当前分类下列表 */
-        list($list,$totalCount) = $this->product_model->getListByPage($map,$page,'id desc,create_time desc','*',$r);
+        list($list,$totalCount) = $this->product_model->getListByPage($map,$page,$order,'*',$r);
         foreach($list as &$val){
         	$val['price'] = price_convert('yuan',$val['price']);
     		$val['ori_price'] = price_convert('yuan',$val['ori_price']);
         }
         unset($val);
 
+        $this->assign('sort',$sort);//把当前的排序规则给前端
+        $this->assign('sort_url',$sort_url);//排序的URL地址
 		$this->assign('list', $list);
         $this->assign('totalCount',$totalCount);
         $this->assign('r',$r);
 		$this->display();
-
 	}
+
+
 	/**
 	 * 商品搜索
 	 * @param  integer $page [description]
