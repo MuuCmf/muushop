@@ -15,13 +15,12 @@ return array(
     /* 模板相关配置 */
     'TMPL_PARSE_STRING' => array(
         '__PUBLIC__' => __ROOT__ . '/Public',
-        '__STATIC__' => __ROOT__ . '/Public/static',
         '__ZUI__' => __ROOT__ . '/Public/zui',
         '__COMMON__'=>__ROOT__ . '/Application/'.MODULE_NAME. '/Static',
         '__IMG__'    => __ROOT__ . '/Application/'.MODULE_NAME. '/Static/images',
         '__CSS__'    => __ROOT__ . '/Application/'.MODULE_NAME. '/Static/css',
         '__JS__'     => __ROOT__ . '/Application/'.MODULE_NAME. '/Static/js',
-        '__EXT__'     => __ROOT__ . '/Application/'.MODULE_NAME. '/Static/ext',
+        '__LIB__'     => __ROOT__ . '/Application/'.MODULE_NAME. '/Static/lib',
     ),
 
     'NEED_VERIFY'=>true,//此处控制默认是否需要审核，该配置项为了便于部署起见，暂时通过在此修改来设定。
