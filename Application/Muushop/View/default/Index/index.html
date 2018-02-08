@@ -2,8 +2,14 @@
 <block name="style">
     <link type="text/css" rel="stylesheet" href="__CSS__/main.min.css"/>
     <link type="text/css" rel="stylesheet" href="__CSS__/index.min.css"/>
+    <style>
+        .main-wrapper {
+            padding-top: 0;
+        }
+    </style>
 </block>
 <block name="body">
+    <input type="hidden" data-location="home" />
     <div class="muushop_topmain">
         <div class="pic">
             {:W('Common/Adv/render',array(array('name'=>'slider','type'=>2,'width'=>'100%','height'=>'auto','margin'=>'0 0 15px 0','title'=>'首页轮播图','data'=>array('style'=>1))))}

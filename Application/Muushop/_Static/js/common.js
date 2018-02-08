@@ -1,7 +1,4 @@
 /*公共JS库*/
-
-
-
 (function($){
     $.extend({
         //AJAX获取购物车产品数
@@ -44,5 +41,13 @@
     });
 })(jQuery);
 
-//获取购物车产品数
-$.get_cart_count();
+$(function(){
+    //获取购物车产品数
+    $.get_cart_count();
+    //非首页顶部导航处理
+    var location = $('input[data-location="home"]').data('location');
+    if(!location || location!=='home'){
+        $('.navbar-muushop').addClass('white-nav');
+    }
+    //
+});
