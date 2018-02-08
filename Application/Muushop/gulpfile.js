@@ -28,8 +28,8 @@ gulp.task('js', function() {
     .pipe(babel({
       presets: ['es2015']
     }))
-    .pipe(concat('main.js'))//合并js
-    .pipe(rename({suffix: '.min'}))//rename压缩后的文件名
+    //.pipe(concat('main.js'))//合并js
+    //.pipe(rename({suffix: '.min'}))//rename压缩后的文件名
     .pipe(uglify())
     .pipe(gulp.dest(dist+'/js'));
 });
