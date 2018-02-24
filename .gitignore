@@ -49,6 +49,9 @@ Temporary Items
 # Svn
 .svn
 
+# gulp
+/node_modules
+
 #
 /.idea
 
@@ -59,8 +62,5 @@ Temporary Items
 /Conf/common.php
 /Runtime/Cache
 /.hatccess
-
-
-
 
 .htaccess
