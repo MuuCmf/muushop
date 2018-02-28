@@ -591,11 +591,10 @@ str;
 				}
 
 				$builder->keyDoAction('admin/muushop/product/action/add/id/###','编辑')
-					->keyDoAction('admin/muushop/product/action/sku_table/id/###','规格')
-					->keyDoAction('admin/muushop/product/action/exi/id/###','参数')
-					->data($product)
-					->pagination($totalCount, 20)
-					->display();
+						->keyDoAction('admin/muushop/product/action/sku_table/id/###','规格')
+						->data($product)
+						->pagination($totalCount, 20)
+						->display();
 			break;
 		}
 	}
@@ -620,10 +619,12 @@ str;
 				if(IS_POST){
 					$id = I('id');
 					empty($id) && $this->error('信息错误',1);
+					$courier_express = I('courier_express');
 					$courier_no = I('courier_no');
 					$courier_name = I('courier_name');
 					$courier_phone = I('courier_phone','','intval');
 					$delivery_info = array(
+						'courier_no'=>$courier_express,
 						'courier_no'=>$courier_no,
 						'courier_name'=>$courier_name,
 						'courier_phone'=>$courier_phone,
@@ -653,6 +654,7 @@ str;
 						->title('发货信息')
 						->suggest('发货信息')
 						->keyReadOnly('id','订单id')
+						->keyText('courier_express','快递公司')
 						->keyText('courier_no','快递单号')
 						->keyText('courier_name','快递员姓名')
 						->keyText('courier_phone','快递员电话')
@@ -714,27 +716,18 @@ str;
 				$builder
 					->title('订单详情')
 					->keyReadOnly('id','订单id')
-//					->keyText('use_point','使用积分')
 					->keyText('back_point','返回积分')
-					->keytext('create_time','创建时间')
-					;
-//				$product_input_list = array(
-//					'title'=>array('name'=>'商品名','type'=>'keytext'),
-//					'quantity'=>array('name'=>'数量','type'=>'keytext'),
-//					'paid_price'=>array('name'=>'价格','type'=>'keytext'),
-//					'sku_id'=>array('name'=>'其他信息','type'=>'keytext'),
-//					'main_img'=>array('name'=>'商品主图','type'=>'keySingleImage'));
+					->keytext('create_time','创建时间');
+
 				$product_input_list = array(
 					'title'=>array('name'=>'商品名','type'=>'text'),
 					'quantity'=>array('name'=>'数量','type'=>'text'),
-					'paid_price'=>array('name'=>'价格/分','type'=>'text'),
+					'paid_price'=>array('name'=>'价格','type'=>'text'),
 					'sku_id'=>array('name'=>'其他信息','type'=>'text'),
-//					'main_img'=>array('name'=>'商品主图','type'=>'SingleImage')
 				);
-				if(!empty($order['products']))
-				{
-					foreach($order['products'] as $pk=> $product)
-					{
+				if(!empty($order['products'])){
+
+					foreach($order['products'] as $pk=> $product) {
 						$MultiInput_name='|';
 						foreach($product_input_list as $k=>$kv)
 						{
@@ -749,19 +742,17 @@ str;
 								$order[$name] = $product[$k];
 							}
 							$order[$name.'title'] = $kv['name'];
-//							$builder->$kv['type']($name,$kv['name']);
 							$MultiInput_name .= $name.'title'.'|'.$name.'|';
 							$MultiInput_array[] =array('type'=>$kv['type'],'style'=>'width:95px;margin-right:5px') ;
 							$MultiInput_array[] =array('type'=>$kv['type'],'style'=>'width:295px;margin-right:5px') ;
 						}
 						$builder->keyMultiInput(trim($MultiInput_name,'|'),'商品['.($pk+1).']信息','',$MultiInput_array);
-
 					}
 				}
 
 				$builder
 					->keytext('paid_time','支付时间')
-					->keyMultiInput('paid_fee|discount_fee|delivery_fee','支付信息(单位：分)','支付金额|优惠金额|运费',array(
+					->keyMultiInput('paid_fee|discount_fee|delivery_fee','支付信息(单位：元)','支付金额|优惠金额|运费',array(
 						array('type'=>'text','style'=>'width:95px;margin-right:5px'),
 						array('type'=>'text','style'=>'width:95px;margin-right:5px'),
 						array('type'=>'text','style'=>'width:95px;margin-right:5px'),
@@ -781,8 +772,7 @@ str;
 					if(empty($order_id) || empty($status) || !($order)){
 						$this->error('参数错误');
 					}else{
-						switch ($status)
-						{
+						switch ($status){
 							case '1':
 								//取消订单
 								$ret = $this->order_logic->cancal_order($order);
@@ -874,8 +864,9 @@ str;
 					->select('显示模式:', 'show_type', 'select', '', '', '', $show_type_array)
 					->buttonNew(U('muushop/order'), '全部订单')
 					->keyText('id','订单id')
+					->keyText('order_no','订单号')
 					->keyJoin('user_id','用户','uid','nickname','member','/admin/user/index');
-//					->ajaxButton(U('shop/order',array('action'=>'delete')),'','删除')
+
 				$option['show_type'] && $builder
 					->keyTime('create_time','下单时间')
 					->keyTime('paid_time','支付时间')
@@ -886,14 +877,12 @@ str;
 					->keyMap('status','订单状态',$status_select)
 					->keyText('paid_fee','总价/元')
 					->keyText('discount_fee','已优惠的价格')
-					->keyText('delivery_fee','邮费')
-					->keyText('product_cnt','种类')
-					->keyText('product_quantity','总数');
+					->keyText('delivery_fee','邮费');
 
-				$builder->keyDoAction('admin/muushop/order/action/order_detail/id/###','订单详情')
-					->keyDoAction('admin/muushop/order/action/order_address/id/###','地址等信息')
+				$builder->keyDoAction('admin/muushop/order/action/order_detail/id/###','详情')
+					->keyDoAction('admin/muushop/order/action/order_address/id/###','地址')
 					->keyDoAction('admin/muushop/order/action/order_delivery/id/###','发货信息')
-					->keyDoActionModalPopup('admin/muushop/order/action/edit_order_modal/id/###','订单操作');
+					->keyDoActionModalPopup('admin/muushop/order/action/edit_order_modal/id/###','操作');
 				$builder
 					->data($order['list'])
 					->pagination($totalCount, $option['r'])

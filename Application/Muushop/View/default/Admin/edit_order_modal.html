@@ -8,7 +8,7 @@
     </style>
 </block>
 <!-- 模态框HTML -->
-<form class="ajax-form" method="post" action="{:U('wshop/order',array('action'=>'edit_order_modal'))}">
+<form id="migration" class="ajax-form" method="post" action="{:U('muushop/order',array('action'=>'edit_order_modal'))}">
 	<div class="form-div">
 		<div style="display: none" ><input type="text" class="form-control" name="status" value="{$ order.status}"></div>
 		<div style="display: none" ><input type="text" class="form-control" name="order_id" value="{$ order.id}"></div>
@@ -74,7 +74,6 @@
 			    <div class="col-md-11 ">没有可以执行的相关操作</div>
 
 		    </div>
-
     </switch>
     <!-- <div>
         <label>
@@ -86,8 +85,23 @@
         <label>
             <input id="hashandele" name="user_choose" value="0" type="radio">未处理
         </label>
-
     </div> -->
-
-    
 </form>
+<script>
+    $(function(){
+        $('[data-role="submit"]').click(function(){
+            query=$('#migration').serialize();
+            var url=$('#migration').attr('action');
+            $.post(url,query,function(msg){
+                if(msg.status){
+                    toast.success('操作成功！');
+                    setTimeout(function(){
+                        window.location.href=msg.url;
+                    },1500);
+                }else{
+                    handleAjax(msg);
+                }
+            },'json');
+        });
+    });
+</script>
