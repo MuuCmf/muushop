@@ -66,6 +66,8 @@ function _initialize()
 			$order['products'] = $products;
 			//支付方式获取
 			$order['pay_type'] = I('post.pay_type',0,'intval');
+			//在线支付的支付类型
+			$order['channel'] = I('post.channel','','text');
 			//使用优惠劵
 			$order['coupon_id'] = I('coupon_id', '', 'intval');
 			//使用的积分抵用数据
@@ -81,7 +83,7 @@ function _initialize()
 				$callback = U('User/orders');
 			}
 			if($order['pay_type']==10){ //10代表在线支付
-				$callback = U('User/orders');
+				$callback = 'http://test.hoomuu.cn/';
 			}
 			
 			if ($ret){
@@ -89,7 +91,16 @@ function _initialize()
 				$order = $this->order_model->get_order_by_id($ret);
 				$result_url=think_encrypt($callback);//支付成功后跳转回的地址
                 //在线支付调用pingpay模块支付功能
-                $this->success('操作成功，即将进入在线支付页面',U('Pingpay/api/pubpingpay',array('app'=>'Muushop','model'=>'MuushopOrder','method'=>'charge','amount'=>$order['paid_fee'],'order_no'=>$order['order_no'],'result_url'=>$result_url)));
+                $this->success('操作成功，即将进入在线支付页面',U('Pingpay/api/pubpingpay',array(
+                	'app'=>'Muushop',
+                	'model'=>'MuushopOrder',
+                	'method'=>'charge',
+                	'amount'=>$order['paid_fee'],
+                	'channel'=>$order['channel'],
+                	'order_no'=>$order['order_no'],
+                	'result_url'=>$result_url
+	                )
+	            ));
 				//$this->success('下单成功',$callback);
 			}else{
 				$this->error('下单失败.' . $this->order_logic->error_str);

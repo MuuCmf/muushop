@@ -305,7 +305,7 @@ $(function(){
             //支付方式为在线支付时，获取支付方式
             var channel = $('.paychannel.selected input').val();
         }else{
-            var channel = 1;
+            var channel = '';
         }
         var coupon_id = $('.coupon-list-box.selected').data('id');
         //获取组装积分使用数据
