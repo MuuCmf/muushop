@@ -455,7 +455,6 @@ str;
 			case 'cell_record':
 				$option['product_id'] = I('product_id',0);
 				$option['user_id'] = I('user_id',0);
-//				$option['min_time'] = I('min_time',0);
 				$option['page'] = I('page',1);
 				$option['r'] = I('r',10);
 				$product_sell_model = D('muushop/ShopProductSell');
@@ -615,7 +614,7 @@ str;
 					$this->error('删除失败，'.$this->order_logic->error_str,'',3);
 				}
 			break;
-			case 'order_delivery':
+			case 'order_delivery'://发货信息
 				if(IS_POST){
 					$id = I('id');
 					empty($id) && $this->error('信息错误',1);
@@ -705,63 +704,46 @@ str;
 					->data(array_merge($address,$infos))
 					->display();
 				break;
-			case 'order_detail':
+			case 'order_detail'://订单详情
 				$id = I('id');
 				$order = $this->order_model->get_order_by_id($id);
 				$order['create_time'] =(empty($order['create_time'])?'':date('Y-m-d H:i:s',$order['create_time']));
 				$order['paid_time'] =(empty($order['paid_time'])?'未支付':date('Y-m-d H:i:s',$order['paid_time']));
 				$order['send_time'] = (empty($order['send_time'])?'未发货':date('Y-m-d H:i:s',$order['send_time']));
 				$order['recv_time'] = (empty($order['recv_time'])?'未收货':date('Y-m-d H:i:s',$order['recv_time']));
-				$builder = new AdminConfigBuilder();
-				$builder
-					->title('订单详情')
-					->keyReadOnly('id','订单id')
-					->keyText('back_point','返回积分')
-					->keytext('create_time','创建时间');
 
-				$product_input_list = array(
-					'title'=>array('name'=>'商品名','type'=>'text'),
-					'quantity'=>array('name'=>'数量','type'=>'text'),
-					'paid_price'=>array('name'=>'价格','type'=>'text'),
-					'sku_id'=>array('name'=>'其他信息','type'=>'text'),
-				);
+				$order['user_info'] = query_user('nickname',$order['user_id']);
+
+				$order['address']["province"] = D('district')->where(array('id' => $order['address']["province"]))->getField('name');
+			    $order['address']["city"] = D('district')->where(array('id' => $order['address']["city"]))->getField('name');
+			    $order['address']["district"] = D('district')->where(array('id' => $order['address']["district"]))->getField('name');
+
+			    //设置支付类型
+			    switch ($order['pay_type']){
+			    	case 1:
+			    		$order['pay_type_cn']="免费商品";
+			    	break;
+			    	case 2:
+			    		$order['pay_type_cn']="货到付款";
+			    	break;
+			    	case 10:
+			    		$order['pay_type_cn']="在线支付";
+			    	break;
+			    	default:
+			    		$order['pay_type_cn']="未设置";
+			    }
+			    
+		    	//商品列表价格单位转为元
 				if(!empty($order['products'])){
-
-					foreach($order['products'] as $pk=> $product) {
-						$MultiInput_name='|';
-						foreach($product_input_list as $k=>$kv)
-						{
-							$name = 'porduct'.$pk.$k;
-							if($k == 'sku_id'){
-								if($product['sku_id'] = explode(';',$product['sku_id']))
-								{
-									unset($product['sku_id'][0]);
-									$order[$name] =(empty($product['sku_id'])?'无':implode(',',$product['sku_id']));
-								}
-							}else{
-								$order[$name] = $product[$k];
-							}
-							$order[$name.'title'] = $kv['name'];
-							$MultiInput_name .= $name.'title'.'|'.$name.'|';
-							$MultiInput_array[] =array('type'=>$kv['type'],'style'=>'width:95px;margin-right:5px') ;
-							$MultiInput_array[] =array('type'=>$kv['type'],'style'=>'width:295px;margin-right:5px') ;
-						}
-						$builder->keyMultiInput(trim($MultiInput_name,'|'),'商品['.($pk+1).']信息','',$MultiInput_array);
+					foreach($order['products'] as &$val){
+						$val['paid_price']='¥ '.sprintf("%01.2f", $val['paid_price']/100);
 					}
 				}
+				unset($val);
 
-				$builder
-					->keytext('paid_time','支付时间')
-					->keyMultiInput('paid_fee|discount_fee|delivery_fee','支付信息(单位：元)','支付金额|优惠金额|运费',array(
-						array('type'=>'text','style'=>'width:95px;margin-right:5px'),
-						array('type'=>'text','style'=>'width:95px;margin-right:5px'),
-						array('type'=>'text','style'=>'width:95px;margin-right:5px'),
-					))
-					->keyText('send_time','发货时间')
-					->keyText('recv_time','收货时间')
-					->buttonBack()
-					->data($order)
-					->display();
+				//dump($order);exit;
+				$this->assign('order',$order);
+				$this->display('Muushop@Admin/order_detail');
 			break;
 			case 'edit_order_modal':
 				if(IS_POST)
@@ -860,9 +842,8 @@ str;
 					->setSearchPostUrl(U('muushop/order'))
 					->search('', 'id', 'text', '订单id', '', '', '')
 					->search('', 'key', 'text', '商品名', '', '', '')
-					->select('订单状态：', 'status', 'select', '', '', '', $status_select2)
-					->select('显示模式:', 'show_type', 'select', '', '', '', $show_type_array)
-					->buttonNew(U('muushop/order'), '全部订单')
+					->select('订单状态: ', 'status', 'select', '', '', '', $status_select2)
+					->select('显示模式: ', 'show_type', 'select', '', '', '', $show_type_array)
 					->keyText('id','订单id')
 					->keyText('order_no','订单号')
 					->keyJoin('user_id','用户','uid','nickname','member','/admin/user/index');
@@ -879,8 +860,8 @@ str;
 					->keyText('discount_fee','已优惠的价格')
 					->keyText('delivery_fee','邮费');
 
-				$builder->keyDoAction('admin/muushop/order/action/order_detail/id/###','详情')
-					->keyDoAction('admin/muushop/order/action/order_address/id/###','地址')
+				$builder
+					->keyDoAction('admin/muushop/order/action/order_detail/id/###','详情')
 					->keyDoAction('admin/muushop/order/action/order_delivery/id/###','发货信息')
 					->keyDoActionModalPopup('admin/muushop/order/action/edit_order_modal/id/###','操作');
 				$builder

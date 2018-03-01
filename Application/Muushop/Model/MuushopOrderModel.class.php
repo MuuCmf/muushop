@@ -78,8 +78,9 @@ class MuushopOrderModel extends Model {
 	 * 获取订单
 	 */
 	public function get_order_by_id($id)
-	{
-		$ret =$this->where('id =' . $id)->find() ;
+	{	
+		$map['id']=$id;
+		$ret =$this->where($map)->find() ;
 		return $ret;
 	}
 

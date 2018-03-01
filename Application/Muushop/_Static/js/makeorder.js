@@ -354,11 +354,11 @@ $(function(){
                 //ret = JSON.parse(ret);
             if(ret.status==1){
                 toast.success(ret.info, '温馨提示');
-                //window.location.replace('/index.php/wshop/index/jsApiPay/order_id/'+ret.info);
+                setTimeout(function () {
+                    window.location.href = ret.url;
+                }, 1000);
             }else{
                 toast.error(ret.info, '温馨提示');
-                setTimeout(function () {
-                },1000);
             }
         })
     });

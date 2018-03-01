@@ -42,7 +42,7 @@ function _initialize()
 				$products = $this->cart_model->get_shop_cart_by_ids($cart_id, get_uid());
 			}
 			//直接购买
-			if($products){
+			if ($products){
 				if (!is_string($products[0]['sku_id']) || !is_numeric($products[0]['quantity'])){
 					$this->error('参数错误');
 				}
@@ -83,9 +83,14 @@ function _initialize()
 			if($order['pay_type']==10){ //10代表在线支付
 				$callback = U('User/orders');
 			}
-
+			
 			if ($ret){
-				$this->success('下单成功',$callback);
+				//获取订单数据
+				$order = $this->order_model->get_order_by_id($ret);
+				$result_url=think_encrypt($callback);//支付成功后跳转回的地址
+                //在线支付调用pingpay模块支付功能
+                $this->success('操作成功，即将进入在线支付页面',U('Pingpay/api/pubpingpay',array('app'=>'Muushop','model'=>'MuushopOrder','method'=>'charge','amount'=>$order['paid_fee'],'order_no'=>$order['order_no'],'result_url'=>$result_url)));
+				//$this->success('下单成功',$callback);
 			}else{
 				$this->error('下单失败.' . $this->order_logic->error_str);
 			}
@@ -290,7 +295,6 @@ function _initialize()
 	{
 		$id = I('id','','intval');
 		$order = $this->order_model->get_order_by_id($id);
-//		var_dump(__file__.' line:'.__line__,$order);exit;
 		$this->assign('order', $order);
 		$this->display();
 	}
