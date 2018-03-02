@@ -83,7 +83,7 @@ function _initialize()
 				$callback = U('User/orders');
 			}
 			if($order['pay_type']==10){ //10代表在线支付
-				$callback = 'http://test.hoomuu.cn/';
+				$callback = 'http://test.hoomuu.cn/index.php?s=/muushop/user/orders.html';
 			}
 			
 			if ($ret){

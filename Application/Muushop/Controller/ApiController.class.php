@@ -16,6 +16,9 @@ class ApiController extends Controller {
 
 	function _initialize()
 	{
+		//引入类库
+        import('Pingpay.PingSDK.init',APP_PATH,'.php');
+        
 		$this->product_model      = D('Muushop/MuushopProduct');
 		$this->cart_model         = D('Muushop/MuushopCart');
 		$this->order_model        = D('Muushop/MuushopOrder');
@@ -116,4 +119,6 @@ class ApiController extends Controller {
 		}
 		$this->ajaxReturn($result,'JSON');
 	}
+
+
 }
