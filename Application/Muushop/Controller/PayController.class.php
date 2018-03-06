@@ -18,13 +18,14 @@ class PayController extends Controller {
 	{
 		//引入pingpay类库
         import('Pingpay.PingSDK.init',APP_PATH,'.php');
-        $this->api_key=modC('MUUSHOP_PINGPAY_APIKEY','','Pingpay');
-        $this->app_id=modC('MUUSHOP_PINGPAY_APPID','','Pingpay');
-        $this->public_key=modC('MUUSHOP_PINGPAY_PUBLICKEY','','Pingpay');
-        $this->rsa_key=modC('MUUSHOP_PINGPAY_PRIVATEKEY','','Pingpay');
+        $this->api_key=modC('MUUSHOP_PINGPAY_APIKEY','','Muushop');
+        $this->app_id=modC('MUUSHOP_PINGPAY_APPID','','Muushop');
+        $this->public_key=modC('MUUSHOP_PINGPAY_PUBLICKEY','','Muushop');
+        $this->rsa_key=modC('MUUSHOP_PINGPAY_PRIVATEKEY','','Muushop');
 	}
 
-	public function pay(){
+	public function charge(){
+		header("Content-Type:text/html;charset=UTF-8");
         /*
         result_url：回调网址
         以上参数必须传过来，否则报错
@@ -39,15 +40,15 @@ class PayController extends Controller {
         }else{
             //根据商户订单ID获取订单数据
             //模块开发约定：订单号字段命名：必须是order_no
-            $order_info = D('Muushop/MuushopOrders')->where(array('order_no'=>$order_no))->find();
+            $order_info = D('Muushop/MuushopOrder')->where(array('order_no'=>$order_no))->find();
             if($order_info){
                 $payment = $order_info['pay_type'];
-                $amount = $order_info['amount'];
+                $amount = $order_info['paid_fee'];
                 $channel = $order_info['channel'];
                 
-                if($payment == 'onlinepay'){        
+                if($payment == 'onlinepay'){
                     //发起pingpay在线支付
-                    $this->pingpay($order_no,$channel,$amount,$metadata,$result_url);
+                    $this->pingpay($order_no,$channel,$amount,$result_url);
                 }
                 if($payment == 'delivery'){
                     //直接跳转至成功页
@@ -92,7 +93,7 @@ class PayController extends Controller {
              $this->redirect('muushop/pay/paybyqrcode',array('app'=>$app,'table'=>$table,'order_no'=>$ch['order_no'],'data'=>$credential,'result_url'=>$result_url),0, '页面跳转中...');
         }
         //非扫码支付处理
-        $channel = $this->pingpayModel->getPaychannelInfo($ch['channel']);//获取支付渠道的详细配置
+        $channel = D('Muushop/MuushopPay')->getPaychannelInfo($ch['channel']);//获取支付渠道的详细配置
         $ch_y = sprintf("%.2f",$ch['amount']/100);
         //是否启用订单确认支付页
 
@@ -103,6 +104,14 @@ class PayController extends Controller {
         $this->assign('ch_y',$ch_y);//金额转换成元
         $this->assign('ch',$ch);
         $this->display();
+    }
+    /**
+     * 支付成功页
+     * @return [type] [description]
+     */
+    public function success(){
+    	$order_no = I('order_no','','text');
+    	$this->display();
     }
 
     /**
@@ -182,16 +191,16 @@ class PayController extends Controller {
      * @param  [type] $result_url 回调地址
      * @return [type]             [description]
      */
-    private function pingpay($order_no,$channel,$amount,$metadata,$result_url){
+    private function pingpay($order_no,$channel,$amount,$result_url){
         //支付成功后的会跳地址
         $result_url = think_decrypt($result_url);
         //检查回调地址中是否包含?
         $check = strpos($result_url, '?'); 
         //如果存在
         if( $check !== false){
-            $arr['success_url'] = $result_url.'&order_no='.$order_no;
+            $arr['success_url'] = $result_url.'/order_no='.$order_no;
         }else{//不存在
-            $arr['success_url'] = $result_url.'?order_no='.$order_no;
+            $arr['success_url'] = $result_url.'/order_no='.$order_no;
         }
         
         $arr['product_id']=$order_no;//商品订单的id
@@ -216,13 +225,13 @@ class PayController extends Controller {
         $data['time_expire'] = '';//订单失效时间，用 Unix 时间戳表示。默认1天
         //系统约定通过metadata的module 来判断是哪个模块发起的支付请求
         //组装metadata
-        $data['metadata'] = $metadata; //使用键值对的形式来构建自己的 metadata，例如 metadata[color] = red，
+        //$data['metadata'] = $metadata; //使用键值对的形式来构建自己的 metadata，例如 metadata[color] = red，
         //$data['description'] = $order['description']; //订单附加说明，最多 255 个 Unicode 字符。
 
         try {
             $ch = \Pingpp\Charge::create($data);
             if($ch){
-                $this->redirect('pingpay/api/payMent',array('data'=>$ch['id'],'result_url'=>$result_url), 0, '页面跳转中...');
+                $this->redirect('Muushop/pay/payMent',array('data'=>$ch['id'],'result_url'=>$result_url), 0, '页面跳转中...');
             }else{
                 $check['error']['message'] = '支付参数有错误';
                 $this->ajaxReturn($check);
@@ -237,5 +246,95 @@ class PayController extends Controller {
             }
         }
     }
+
+
+    private function extra($channelName,$arr)
+    {   
+        $path = APP_PATH  . 'Pingpay/Conf/channel.php';
+        $channel = load_config($path);
+        //$extra = $channel[$channelName]['extra'];
+        $extra = $this->_extra($channelName,$arr);
+        return $extra;
+    }
+
+    private function _extra($channelName,$arr)//自定义extra的值
+    {
+        switch ($channelName)
+        {
+            case 'alipay':
+              $extra = array(
+                    //'extern_token'=>'',//开放平台返回的包含账户信息的 token（授权令牌，商户在一定时间内对支付宝某些服务的访问权限）。通过授权登录后获取的  alipay_open_id ，作为该参数的  value ，登录授权账户即会为支付账户，32 位字符串。
+                    //'rn_check'=>'F',//是否发起实名校验，T 代表发起实名校验；F 代表不发起实名校验。
+                    //'buyer_account'=>''//支付完成将额外返回付款用户的支付宝账号。
+                );
+            break;
+            case 'alipay_wap':
+              $extra= array(
+                    'success_url'=>$arr['success_url'],//支付成功的回调地址。
+                    'cancel_url'=>$arr['cancel_url'],//支付取消的回调地址， app_pay 为true时，该字段无效。
+                    'app_pay'=>'true',//是否使用支付宝客户端支付，该参数为true时，调用客户端支付。
+                    //'buyer_account'=>'',//支付完成将额外返回付款用户的支付宝账号。
+                );
+            break;
+            case 'alipay_pc_direct':
+            $extra = array(
+                    'success_url'=>$arr['success_url'],//支付成功的回调地址。
+                    'enable_anti_phishing_key'=>'',//是否开启防钓鱼网站的验证参数（如果已申请开通防钓鱼时间戳验证，则此字段必填)
+                    'exter_invoke_ip'=>$_SERVER['REMOTE_ADDR'],//客户端 IP ，用户在创建交易时，该用户当前所使用机器的IP（如果商户申请后台开通防钓鱼IP地址检查选项，此字段必填，校验用）
+                );
+            break;
+            case 'alipay_qr':
+            $extra = array(
+                    
+                );
+            break;
+            case 'wx':
+            $extra=array(
+                    'limit_pay'=>'no_credit',//指定支付方式，指定不能使用信用卡支付可设置为  no_credit 
+                    'goods_tag'=>$arr['goods_tag'],//商品标记，代金券或立减优惠功能的参数。
+                    'open_id'=>$arr['open_id'],//用户在商户  appid 下的唯一标识
+                    //'bank_type'=>'',//支付完成后额外返回付款用户的付款银行类型  bank_type
+                );
+            break;
+            case 'wx_pub':
+            $extra=array(
+                    'limit_pay'=>'no_credit',//指定支付方式，指定不能使用信用卡支付可设置为  no_credit 。
+                    'product_id'=>$arr['product_id'],//商品 ID，1-32 位字符串。此 id 为二维码中包含的商品 ID，商户自行维护。
+                    'goods_tag'=>$arr['goods_tag'],//商品标记，代金券或立减优惠功能的参数。
+                    //'open_id'=>'',//支付完成后额外返回付款用户的微信  open_id 。
+                    //'bank_type'=>'',//支付完成后额外返回付款用户的付款银行类型  bank_type 。
+                );
+            break;
+            case 'wx_pub_qr':
+            $extra=array(
+                    'limit_pay'=>'no_credit',//指定支付方式，指定不能使用信用卡支付可设置为  no_credit 。
+                    'product_id'=>$arr['product_id'],//商品 ID，1-32 位字符串。此 id 为二维码中包含的商品 ID，商户自行维护。
+                    'goods_tag'=>$arr['goods_tag'],//商品标记，代金券或立减优惠功能的参数。
+                    //'open_id'=>'',//支付完成后额外返回付款用户的微信  open_id 。
+                    //'bank_type'=>'',//支付完成后额外返回付款用户的付款银行类型  bank_type 。
+                );
+            break;
+            case 'wx_wap':
+            $extra=array(
+                    'result_url'=>$arr['success_url'],//支付完成的回调地址。
+                    'goods_tag'=>$arr['goods_tag'],//商品标记，代金券或立减优惠功能的参数。
+                    //'open_id'=>'',//支付完成后额外返回付款用户的微信  open_id 。
+                    //'bank_type'=>'',//支付完成后额外返回付款用户的付款银行类型  bank_type 。
+                );
+            break;
+            case 'upacp_wap':
+            $extra=array(
+                    'result_url'=>$arr['success_url'],//支付完成的回调地址。
+                );
+            break;
+            case 'upacp_pc':
+            $extra=array(
+                    'result_url'=>$arr['success_url'],//支付完成的回调地址。
+                );
+            break;
+        }
+        return $extra;
+    }
+
 
 }

@@ -107,7 +107,7 @@ $(function(){
         var _this = $(this);
         $('.pay-type').removeClass('selected');
         _this.addClass('selected');
-        if(_this.data('id')==10){
+        if(_this.data('value')=='onlinepay'){
             $('.inline-pay-type').removeClass('hidden');
             $('.inline-pay-type').addClass('display');
         }else{
@@ -299,9 +299,9 @@ $(function(){
             toast.error('收货地址未选择', '温馨提示');
             return
         }
-        var payType = $('.pay-type.selected').data('id');
+        var payType = $('.pay-type.selected').data('value');
         //获取支付方式
-        if(payType==10){
+        if(payType=='onlinepay'){
             //支付方式为在线支付时，获取支付方式
             var channel = $('.paychannel.selected input').val();
         }else{

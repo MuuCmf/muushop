@@ -180,7 +180,7 @@ class MuushopController extends AdminController
         $data['MUUSHOP_PINGPAY_WEBHOOKS'] =$_SERVER['SERVER_NAME'].'muushop/pay/webhooks';
 
         //获取所有支付方式
-        //$score_payment = $balance_payment = $this->pingpayModel->getPayment();
+        $able_payment = D('Muushop/MuushopPay')->getPayment();
         
         $admin_config
             ->title('Ping++支付中心基本设置')
@@ -192,9 +192,12 @@ class MuushopController extends AdminController
             ->keyTextArea('MUUSHOP_PINGPAY_PRIVATEKEY','RSA 商户私钥','如：your_rsa_private_key.pem')
             ->keyReadOnlyText('MUUSHOP_PINGPAY_WEBHOOKS','webhooks回调地址')
 
+             ->keyCheckBox('MUUSHOP_PAYMENT','允许的支付方式','',$able_payment)
+
             
             
             ->group('ping++ 接口设置','MUUSHOP_PINGPAY_APIKEY,MUUSHOP_PINGPAY_APPID,MUUSHOP_PINGPAY_PUBLICKEY,MUUSHOP_PINGPAY_PUBLISHABLEKEY,MUUSHOP_PINGPAY_PRIVATEKEY,MUUSHOP_PINGPAY_WEBHOOKS')
+            ->group('允许的支付方式','MUUSHOP_PAYMENT')
 
             ->buttonSubmit('', '保存')
             ->data($data);

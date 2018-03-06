@@ -65,7 +65,7 @@ function _initialize()
 			//商品信息
 			$order['products'] = $products;
 			//支付方式获取
-			$order['pay_type'] = I('post.pay_type',0,'intval');
+			$order['pay_type'] = I('post.pay_type','','text');
 			//在线支付的支付类型
 			$order['channel'] = I('post.channel','','text');
 			//使用优惠劵
@@ -79,10 +79,10 @@ function _initialize()
 			$ret = $this->order_logic->make_order($order);
 
 			//根据支付方式判断回调地址
-			if($order['pay_type']==1){
+			if($order['pay_type']=='delivery'){
 				$callback = U('User/orders');
 			}
-			if($order['pay_type']==10){ //10代表在线支付
+			if($order['pay_type']=='onlinepay'){ //10代表在线支付
 				$callback = 'http://test.hoomuu.cn/index.php?s=/muushop/user/orders.html';
 			}
 			
@@ -91,12 +91,7 @@ function _initialize()
 				$order = $this->order_model->get_order_by_id($ret);
 				$result_url=think_encrypt($callback);//支付成功后跳转回的地址
                 //在线支付调用pingpay模块支付功能
-                $this->success('操作成功，即将进入在线支付页面',U('Pingpay/api/pubpingpay',array(
-                	'app'=>'Muushop',
-                	'model'=>'MuushopOrder',
-                	'method'=>'charge',
-                	'amount'=>$order['paid_fee'],
-                	'channel'=>$order['channel'],
+                $this->success('操作成功，即将进入在线支付页面',U('Muushop/pay/charge',array(
                 	'order_no'=>$order['order_no'],
                 	'result_url'=>$result_url
 	                )
@@ -209,6 +204,10 @@ function _initialize()
 		        $delivery_id = $delivery_id;//获取配送方式及运费ID
 		    }
 		    $real_price = sprintf("%01.2f", $real_price);
+
+		    //获取允许的支付方式
+		    $payment_config = modC('MUUSHOP_PAYMENT','','Muushop');
+		    $payment = D('Muushop/MuushopPay')->getPayment($payment_config);
 		    
 		    $this->assign('score_list',$score_list);//允许抵用的积分类型
 			$this->assign('delivery_id', $delivery_id);
@@ -218,6 +217,7 @@ function _initialize()
 			$this->assign('real_quantity', $real_quantity);
 			$this->assign('enable_coupon',$enable_coupon);
 			$this->assign('listAddress',$listAddress);
+			$this->assign('payment',$payment);
 			$this->display();
 		}
 	}

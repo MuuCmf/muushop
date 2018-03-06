@@ -91,9 +91,9 @@
     <section class="pay-section common_box margin-top-10">
         <h3 class="linear-title vertical-box">支付方式</h3>
         <div class="clearfix">
-            <span class="linear-input pay-type" data-id=1>货到付款<i></i></span>
-            <span class="linear-input pay-type" data-id=10>在线支付<i></i></span>
-           
+            <volist name="payment" id="payment">
+                <span class="linear-input pay-type" data-value="{$payment.value}">{$payment.title}<i></i></span>
+           </volist>
         </div>
         <div class="inline-pay-type hidden">
             <h4>在线支付选择</h4>
