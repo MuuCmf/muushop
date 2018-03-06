@@ -167,6 +167,39 @@ class MuushopController extends AdminController
 
 		return $cats;
 	}
+
+	public function pingpay_config()
+    {
+        $admin_config = new AdminConfigBuilder();
+        $data = $admin_config->handleConfig();
+        if ($_SERVER['HTTPS'] != "on") {
+        	$is_https = 'http://';
+        }else{
+        	$is_https = 'https://';
+        }
+        $data['MUUSHOP_PINGPAY_WEBHOOKS'] =$_SERVER['SERVER_NAME'].'muushop/pay/webhooks';
+
+        //获取所有支付方式
+        //$score_payment = $balance_payment = $this->pingpayModel->getPayment();
+        
+        $admin_config
+            ->title('Ping++支付中心基本设置')
+            //ping++配置
+            ->keyText('MUUSHOP_PINGPAY_APIKEY','api_key','登录(https://dashboard.pingxx.com)->点击管理平台右上角公司名称->开发信息-> Secret Key')
+            ->keyText('MUUSHOP_PINGPAY_APPID','app_id','登录(https://dashboard.pingxx.com)->点击你创建的应用->应用首页->应用 ID(App ID)')
+            ->keyTextArea('MUUSHOP_PINGPAY_PUBLICKEY','ping++公钥','')
+            ->keyText('MUUSHOP_PINGPAY_PUBLISHABLEKEY','Publishable Key','Ping++ 应用内快捷支付 Key')
+            ->keyTextArea('MUUSHOP_PINGPAY_PRIVATEKEY','RSA 商户私钥','如：your_rsa_private_key.pem')
+            ->keyReadOnlyText('MUUSHOP_PINGPAY_WEBHOOKS','webhooks回调地址')
+
+            
+            
+            ->group('ping++ 接口设置','MUUSHOP_PINGPAY_APIKEY,MUUSHOP_PINGPAY_APPID,MUUSHOP_PINGPAY_PUBLICKEY,MUUSHOP_PINGPAY_PUBLISHABLEKEY,MUUSHOP_PINGPAY_PRIVATEKEY,MUUSHOP_PINGPAY_WEBHOOKS')
+
+            ->buttonSubmit('', '保存')
+            ->data($data);
+        $admin_config->display();
+    }
 	/*
 	 * 商品分类
 	 */
