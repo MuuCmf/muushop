@@ -59,14 +59,16 @@ class MuushopController extends AdminController
 	 */
 	public function config()
 	{
-		//允许抵用的积分类型
-		$score_list = D('Ucenter/Score')->getTypeList(array('status' => 1));
-        $score_type=array();
-        foreach($score_list as $val){
-            $score_type=array_merge($score_type,array('score'.$val['id']=>$val['title']));
+		
+        if ($_SERVER['HTTPS'] != "on") {
+        	$is_https = 'http://';
+        }else{
+        	$is_https = 'https://';
         }
+        $data['MUUSHOP_PINGPAY_WEBHOOKS'] =$_SERVER['SERVER_NAME'].'/muushop/pay/webhooks';
 
-        $pay_type = array('1'=>'货到付款','10'=>'在线支付');
+        //获取所有支付方式
+        $able_payment = D('Muushop/MuushopPay')->getPayment();
 
 		$builder = new AdminConfigBuilder();
 		$data = $builder->handleConfig();
@@ -76,14 +78,25 @@ class MuushopController extends AdminController
 			->keyText('MUUSHOP_SHOW_TITLE', '商城名称', '在首页的商场名称')->keyDefault('MUUSHOP_SHOW_TITLE','MuuCmf轻量级商场解决方案')
 			->keySingleImage('MUUSHOP_SHOW_LOGO','商场logo')
 			->keyBool('MUUSHOP_SHOW_STATUS', '商城状态','默认正常')
-			->keyCheckBox('MUUSHOP_SHOW_PAYTYPE','支付方式','请选择启用的支付方式',$pay_type)
-			->keyCheckBox('MUUSHOP_SHOW_SCORE','允许抵用现金的积分类型','积分比例请在Pingpay模块配置',$score_type)
 			->keyEditor('MUUSHOP_SHOW_DESC', '商城简介','','all',array('width' => '800px', 'height' => '200px'))
+
+			//ping++配置
+            ->keyText('MUUSHOP_PINGPAY_APIKEY','api_key','登录(https://dashboard.pingxx.com)->点击管理平台右上角公司名称->开发信息-> Secret Key')
+            ->keyText('MUUSHOP_PINGPAY_APPID','app_id','登录(https://dashboard.pingxx.com)->点击你创建的应用->应用首页->应用 ID(App ID)')
+            ->keyTextArea('MUUSHOP_PINGPAY_PUBLICKEY','ping++公钥','')
+            ->keyText('MUUSHOP_PINGPAY_PUBLISHABLEKEY','Publishable Key','Ping++ 应用内快捷支付 Key')
+            ->keyTextArea('MUUSHOP_PINGPAY_PRIVATEKEY','RSA 商户私钥','如：your_rsa_private_key.pem')
+            ->keyReadOnlyText('MUUSHOP_PINGPAY_WEBHOOKS','webhooks回调地址')
+            //支付设置
+            ->keyCheckBox('MUUSHOP_PAYMENT','允许的支付方式','',$able_payment)
+            ->keyText('MUUSHOP_PAY_CALLBACK','支付成功后的回调地址')
 
 			//售后保障
 			->keyEditor('MUUSHOP_SHOW_SERVICE', '售后保障','','all',array('width' => '800px', 'height' => '500px'))
 
 			->group('商城基本配置', 'MUUSHOP_SHOW_TITLE,MUUSHOP_SHOW_LOGO,MUUSHOP_SHOP_STATUS,MUUSHOP_SHOW_PAYTYPE,MUUSHOP_SHOW_SCORE,MUUSHOP_SHOW_DESC,')
+			->group('ping++ 接口设置','MUUSHOP_PINGPAY_APIKEY,MUUSHOP_PINGPAY_APPID,MUUSHOP_PINGPAY_PUBLICKEY,MUUSHOP_PINGPAY_PUBLISHABLEKEY,MUUSHOP_PINGPAY_PRIVATEKEY,MUUSHOP_PINGPAY_WEBHOOKS')
+            ->group('支付设置','MUUSHOP_PAYMENT,MUUSHOP_PAY_CALLBACK')
 			->group('售后保障','MUUSHOP_SHOW_SERVICE')
 			
 			->buttonSubmit('', '保存')
@@ -168,41 +181,6 @@ class MuushopController extends AdminController
 		return $cats;
 	}
 
-	public function pingpay_config()
-    {
-        $admin_config = new AdminConfigBuilder();
-        $data = $admin_config->handleConfig();
-        if ($_SERVER['HTTPS'] != "on") {
-        	$is_https = 'http://';
-        }else{
-        	$is_https = 'https://';
-        }
-        $data['MUUSHOP_PINGPAY_WEBHOOKS'] =$_SERVER['SERVER_NAME'].'muushop/pay/webhooks';
-
-        //获取所有支付方式
-        $able_payment = D('Muushop/MuushopPay')->getPayment();
-        
-        $admin_config
-            ->title('Ping++支付中心基本设置')
-            //ping++配置
-            ->keyText('MUUSHOP_PINGPAY_APIKEY','api_key','登录(https://dashboard.pingxx.com)->点击管理平台右上角公司名称->开发信息-> Secret Key')
-            ->keyText('MUUSHOP_PINGPAY_APPID','app_id','登录(https://dashboard.pingxx.com)->点击你创建的应用->应用首页->应用 ID(App ID)')
-            ->keyTextArea('MUUSHOP_PINGPAY_PUBLICKEY','ping++公钥','')
-            ->keyText('MUUSHOP_PINGPAY_PUBLISHABLEKEY','Publishable Key','Ping++ 应用内快捷支付 Key')
-            ->keyTextArea('MUUSHOP_PINGPAY_PRIVATEKEY','RSA 商户私钥','如：your_rsa_private_key.pem')
-            ->keyReadOnlyText('MUUSHOP_PINGPAY_WEBHOOKS','webhooks回调地址')
-
-             ->keyCheckBox('MUUSHOP_PAYMENT','允许的支付方式','',$able_payment)
-
-            
-            
-            ->group('ping++ 接口设置','MUUSHOP_PINGPAY_APIKEY,MUUSHOP_PINGPAY_APPID,MUUSHOP_PINGPAY_PUBLICKEY,MUUSHOP_PINGPAY_PUBLISHABLEKEY,MUUSHOP_PINGPAY_PRIVATEKEY,MUUSHOP_PINGPAY_WEBHOOKS')
-            ->group('允许的支付方式','MUUSHOP_PAYMENT')
-
-            ->buttonSubmit('', '保存')
-            ->data($data);
-        $admin_config->display();
-    }
 	/*
 	 * 商品分类
 	 */
@@ -795,47 +773,46 @@ str;
 								//取消订单
 								$ret = $this->order_logic->cancal_order($order);
 								if($ret){
-									$this->success('操作成功');
+									$this->success('操作成功',U('Muushop/order'));
 								}else{
 									$this->error('操作失败,'.$this->order_logic->error_str);
 								}
 								break;
 							case '2':
-								//发货
-								$courier_no = I('courier_no');
-								$courier_name = I('courier_name');
-								$courier_phone = I('courier_phone','','intval');
-								$delivery_info = array(
-									'courier_no'=>$courier_no,
-									'courier_name'=>$courier_name,
-									'courier_phone'=>$courier_phone,
-								);
-								$ret = $this->order_logic->send_good($order,$delivery_info);
-								if($ret){
-									$this->success('操作成功');
-								}else{
-									$this->error('操作失败,'.$this->order_logic->error_str);
+								if(IS_POST){
+									$this->success('发货完成',U('Muushop/order'));
+									//发货
+									$courier_express = I('courier_express');
+									$courier_no = I('courier_no');
+									$courier_phone = I('courier_phone','','intval');
+									$delivery_info = array(
+										'courier_express' =>$courier_express,
+										'courier_no'=>$courier_no,
+										'courier_phone'=>$courier_phone,
+									);
+									$ret = $this->order_logic->send_good($order,$delivery_info);
+									if($ret){
+										$this->success('操作成功',U('Muushop/order'));
+									}else{
+										$this->error('操作失败,'.$this->order_logic->error_str);
+									}
 								}
+								
 								break;
 							case '3':
 								//确认收货
 								$ret = $this->order_logic->recv_goods($order);
 								if($ret){
-									$this->success('操作成功');
+									$this->success('操作成功',U('Muushop/order'));
 								}else{
 									$this->error('操作失败,'.$this->order_logic->error_str);
 								}
-								break;
-							case '8':
-								//拒绝退款
-								$refund_reason = I('refund_reason','');
-								$this->error('暂不支持该操作,'.$this->order_logic->error_str);
 								break;
 							case '10':
 								//删除订单
 								$ret = $this->order_logic->delete_order($order['id']);
 								if($ret){
-									$this->success('操作成功');
+									$this->success('操作成功',U('Muushop/order'));
 								}else{
 									$this->error('操作失败,'.$this->order_logic->error_str);
 								}
@@ -846,11 +823,13 @@ str;
 					$id = I('id');//获取点击的ids
 					$order = $this->order_model->get_order_by_id($id);
 					$this->assign('order', $order);
+					$path = APP_PATH  . 'Muushop/Conf/delivery.php';
+        			$delivery = load_config($path);
+        			$this->assign('delivery',$delivery);
 					$this->display('Muushop@Admin/edit_order_modal');
 				}
-
-
 				break;
+
 			default:
 				$option['page'] = I('page',1);
 				$option['r'] = I('r',20);
@@ -867,6 +846,9 @@ str;
 					$val['delivery_fee']='¥ '.sprintf("%01.2f", $val['delivery_fee']/100);
 					$val['discount_fee']='- ¥ '.sprintf("%01.2f", $val['discount_fee']/100);
 				}
+				unset($val);
+				//支付方式
+				$payment = D('Muushop/MuushopPay')->getPayment();
 
 				$status_select = $this->order_model->get_order_status_config_select();
 				$status_select2 = $this->order_model->get_order_status_list_select();
@@ -880,9 +862,11 @@ str;
 					->search('', 'key', 'text', '商品名', '', '', '')
 					->select('订单状态: ', 'status', 'select', '', '', '', $status_select2)
 					->select('显示模式: ', 'show_type', 'select', '', '', '', $show_type_array)
+
 					->keyText('id','订单id')
 					->keyText('order_no','订单号')
-					->keyJoin('user_id','用户','uid','nickname','member','/admin/user/index');
+					//->keyJoin('user_id','用户','uid','nickname','member','/admin/user/index')
+					->keyUid('user_id','用户');
 
 				$option['show_type'] && $builder
 					->keyTime('create_time','下单时间')
@@ -891,6 +875,7 @@ str;
 					->keyTime('recv_time','收货时间');
 
 				$option['show_type'] || $builder
+					->keyMap('pay_type','支付方式',$payment)
 					->keyMap('status','订单状态',$status_select)
 					->keyText('paid_fee','总价/元')
 					->keyText('discount_fee','已优惠的价格')

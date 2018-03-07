@@ -78,7 +78,7 @@ function _initialize()
 			$ret = $this->order_logic->make_order($order);
 
 			//根据支付方式判断回调地址
-			$callback = 'http://'.$_SERVER['HTTP_HOST'].'/index.php?s=/muushop/user/orders.html';
+			$callback = modC('MUUSHOP_PAY_CALLBACK','','Muushop');
 			if ($ret){
 				//获取订单数据
 				$order = $this->order_model->get_order_by_id($ret);
@@ -235,8 +235,7 @@ function _initialize()
 	public function cancel_order()
 	{
 		$this->init_user();
-		if (IS_POST)
-		{
+		if (IS_POST){
 			if (!($order_id = I('id', false, 'intval'))
 				|| !($order = $this->order_model->get_order_by_id($order_id))
 				|| !($order['user_id'] == $this->user_id)

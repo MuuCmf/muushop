@@ -44,6 +44,10 @@ class MuushopOrderLogic extends Model{
 			//禁止设为 免费
 			$this->error_str = '支付方式未设置或出错！';
 		}
+		if ($order['pay_type'] ==  'delivery') {
+			//货到付款
+			$order['status'] = 2;//待发货
+		}
 		//$order['pay_type']=$order['pay_type'];
 
 		//记录下单时的商品价格
