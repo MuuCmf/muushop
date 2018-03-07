@@ -3,8 +3,7 @@
 namespace Muushop\Controller;
 
 use Think\Controller;
-use Com\TPWechat;
-use Com\WechatAuth;
+
 class OrderController extends BaseController {
 	protected $product_model;
 	protected $cart_model;
@@ -79,28 +78,18 @@ function _initialize()
 			$ret = $this->order_logic->make_order($order);
 
 			//根据支付方式判断回调地址
-			if($order['pay_type']=='delivery'){
-				$callback = U('User/orders');
-			}
-			if($order['pay_type']=='onlinepay'){ //10代表在线支付
-				$callback = 'http://test.hoomuu.cn/index.php?s=/muushop/user/orders.html';
-			}
-			
+			$callback = 'http://'.$_SERVER['HTTP_HOST'].'/index.php?s=/muushop/user/orders.html';
 			if ($ret){
 				//获取订单数据
 				$order = $this->order_model->get_order_by_id($ret);
-				$result_url=think_encrypt($callback);//支付成功后跳转回的地址
+				$result_url=urlencode($callback);//支付成功后跳转回的地址
                 //在线支付调用pingpay模块支付功能
-                $this->success('操作成功，即将进入在线支付页面',U('Muushop/pay/charge',array(
-                	'order_no'=>$order['order_no'],
-                	'result_url'=>$result_url
-	                )
-	            ));
-				//$this->success('下单成功',$callback);
+                $this->success('操作成功，即将进入在线支付页面',U('Muushop/pay/charge',array('order_no'=>$order['order_no'],'result_url'=>$result_url)));
 			}else{
 				$this->error('下单失败.' . $this->order_logic->error_str);
 			}
 		}else{
+
 			//购物车提交
 			$cart_id = I('cart_id','','text');
 			//直接购买
@@ -182,15 +171,6 @@ function _initialize()
             	$val['quantity'] = D('Ucenter/Score')->getUserScore(get_uid(), $val['id']);
             }
             unset($val);
-            //dump($score_list);exit;
-		    //获取收货地址列表
-			list($listAddress,$totalCount) = $this->user_address_model->get_user_address_list(get_uid());
-			foreach($listAddress as &$val){
-		            $val['province'] = D('district')->where(array('id' => $val['province']))->getField('name');
-		            $val['city'] = D('district')->where(array('id' => $val['city']))->getField('name');
-		            $val['district'] = D('district')->where(array('id' => $val['district']))->getField('name');
-			}
-			unset($val);
 			//获取运费价格
 			//$delivery_id值为空即包邮
 			if(!empty($product)){
@@ -216,15 +196,15 @@ function _initialize()
 			$this->assign('real_price',$real_price);
 			$this->assign('real_quantity', $real_quantity);
 			$this->assign('enable_coupon',$enable_coupon);
-			$this->assign('listAddress',$listAddress);
+			
 			$this->assign('payment',$payment);
 			$this->display();
 		}
 	}
 
 	
-	public function orders($page=1,$r=10)
-	{
+	public function orders($page=1,$r=10){
+
 		$this->init_user();
 		$option['status'] = 1;
 		$option['page'] = $page;

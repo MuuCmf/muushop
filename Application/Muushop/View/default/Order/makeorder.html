@@ -159,15 +159,6 @@
         </div>
     </section>
 
-    <php>if(!empty($vipcard_discount)&&$vipcard_discount!=1){</php>
-        <!--会员卡优惠-->
-        <section class="common_box margin-top-10">
-            <span class="linear-title vertical-box"><span>会员优惠</span></span>
-            <input class="linear-input border-box tips-font" type="text" value="<php> echo ($vipcard_discount*10).'折优惠：减免￥'.$real_price*$vipcard_discount </php>" readonly placeholder="">
-        </section>
-    <php>}</php>
-
-
     <section class="common_box margin-top-10">
         <h3 class="linear-title vertical-box"><span>备注</span></h3>
         <textarea class="form-control remark-input" rows="2" placeholder="请填写您的留言"></textarea>

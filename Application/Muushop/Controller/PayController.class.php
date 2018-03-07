@@ -46,14 +46,15 @@ class PayController extends Controller {
                 $amount = $order_info['paid_fee'];
                 $channel = $order_info['channel'];
                 
-                if($payment == 'onlinepay'){
-                    //发起pingpay在线支付
+                if($payment == 'onlinepay'){//发起pingpay在线支付
                     $this->pingpay($order_no,$channel,$amount,$result_url);
                 }
-                if($payment == 'delivery'){
-                    //直接跳转至成功页
-                    $result_url = think_decrypt($result_url).'?order_no='.$order_no;
-                    $this->redirect($result_url,'', 0, '页面跳转中...');
+                if($payment == 'delivery'){//货到付款、直接跳转至成功页
+                    $result_url = urldecode($result_url);
+                    redirect($result_url);
+                }
+                if($payment == 'balance'){//余额支付
+
                 }
             }else{
                 $this->error('获取订单数据时发生错误！');
@@ -193,14 +194,14 @@ class PayController extends Controller {
      */
     private function pingpay($order_no,$channel,$amount,$result_url){
         //支付成功后的会跳地址
-        $result_url = think_decrypt($result_url);
+        $result_url = urldecode($result_url);
         //检查回调地址中是否包含?
         $check = strpos($result_url, '?'); 
         //如果存在
         if( $check !== false){
-            $arr['success_url'] = $result_url.'/order_no='.$order_no;
+            $arr['success_url'] = $result_url;
         }else{//不存在
-            $arr['success_url'] = $result_url.'/order_no='.$order_no;
+            $arr['success_url'] = $result_url;
         }
         
         $arr['product_id']=$order_no;//商品订单的id
