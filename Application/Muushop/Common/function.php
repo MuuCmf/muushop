@@ -11,3 +11,5 @@ function price_convert($type='yuan',$price){
 	return $price;
 }
 
+
+

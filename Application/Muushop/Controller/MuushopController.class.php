@@ -59,14 +59,6 @@ class MuushopController extends AdminController
 	 */
 	public function config()
 	{
-		
-        if ($_SERVER['HTTPS'] != "on") {
-        	$is_https = 'http://';
-        }else{
-        	$is_https = 'https://';
-        }
-        $data['MUUSHOP_PINGPAY_WEBHOOKS'] =$_SERVER['SERVER_NAME'].'/muushop/pay/webhooks';
-
         //获取所有支付方式
         $able_payment = D('Muushop/MuushopPay')->getPayment();
 
@@ -80,13 +72,6 @@ class MuushopController extends AdminController
 			->keyBool('MUUSHOP_SHOW_STATUS', '商城状态','默认正常')
 			->keyEditor('MUUSHOP_SHOW_DESC', '商城简介','','all',array('width' => '800px', 'height' => '200px'))
 
-			//ping++配置
-            ->keyText('MUUSHOP_PINGPAY_APIKEY','api_key','登录(https://dashboard.pingxx.com)->点击管理平台右上角公司名称->开发信息-> Secret Key')
-            ->keyText('MUUSHOP_PINGPAY_APPID','app_id','登录(https://dashboard.pingxx.com)->点击你创建的应用->应用首页->应用 ID(App ID)')
-            ->keyTextArea('MUUSHOP_PINGPAY_PUBLICKEY','ping++公钥','')
-            ->keyText('MUUSHOP_PINGPAY_PUBLISHABLEKEY','Publishable Key','Ping++ 应用内快捷支付 Key')
-            ->keyTextArea('MUUSHOP_PINGPAY_PRIVATEKEY','RSA 商户私钥','如：your_rsa_private_key.pem')
-            ->keyReadOnlyText('MUUSHOP_PINGPAY_WEBHOOKS','webhooks回调地址')
             //支付设置
             ->keyCheckBox('MUUSHOP_PAYMENT','允许的支付方式','',$able_payment)
             ->keyText('MUUSHOP_PAY_CALLBACK','支付成功后的回调地址')
@@ -95,12 +80,41 @@ class MuushopController extends AdminController
 			->keyEditor('MUUSHOP_SHOW_SERVICE', '售后保障','','all',array('width' => '800px', 'height' => '500px'))
 
 			->group('商城基本配置', 'MUUSHOP_SHOW_TITLE,MUUSHOP_SHOW_LOGO,MUUSHOP_SHOP_STATUS,MUUSHOP_SHOW_PAYTYPE,MUUSHOP_SHOW_SCORE,MUUSHOP_SHOW_DESC,')
-			->group('ping++ 接口设置','MUUSHOP_PINGPAY_APIKEY,MUUSHOP_PINGPAY_APPID,MUUSHOP_PINGPAY_PUBLICKEY,MUUSHOP_PINGPAY_PUBLISHABLEKEY,MUUSHOP_PINGPAY_PRIVATEKEY,MUUSHOP_PINGPAY_WEBHOOKS')
             ->group('支付设置','MUUSHOP_PAYMENT,MUUSHOP_PAY_CALLBACK')
 			->group('售后保障','MUUSHOP_SHOW_SERVICE')
 			
 			->buttonSubmit('', '保存')
 			->display();
+	}
+
+	public function api_config(){
+		if ($_SERVER['HTTPS'] != "on") {
+        	$is_https = 'http://';
+        }else{
+        	$is_https = 'https://';
+        }
+        $data['MUUSHOP_PINGPAY_WEBHOOKS'] =$_SERVER['SERVER_NAME'].'/muushop/pay/webhooks';
+		$builder = new AdminConfigBuilder();
+		$data = $builder->handleConfig();
+		$builder->title('Api设置')
+		//ping++配置
+        ->keyText('MUUSHOP_PINGPAY_APIKEY','api_key','登录(https://dashboard.pingxx.com)->点击管理平台右上角公司名称->开发信息-> Secret Key')
+        ->keyText('MUUSHOP_PINGPAY_APPID','app_id','登录(https://dashboard.pingxx.com)->点击你创建的应用->应用首页->应用 ID(App ID)')
+        ->keyTextArea('MUUSHOP_PINGPAY_PUBLICKEY','ping++公钥','')
+        ->keyText('MUUSHOP_PINGPAY_PUBLISHABLEKEY','Publishable Key','Ping++ 应用内快捷支付 Key')
+        ->keyTextArea('MUUSHOP_PINGPAY_PRIVATEKEY','RSA 商户私钥','如：your_rsa_private_key.pem')
+        ->keyReadOnlyText('MUUSHOP_PINGPAY_WEBHOOKS','webhooks回调地址')
+
+        //物流API配置
+        ->keyText('MUUSHOP_DELIVERY_EBUSINESS','Ebusiness','请到快递鸟官网申请http://kdniao.com/reg')
+        ->keyText('MUUSHOP_DELIVERY_APPKEY','AppKey','电商加密私钥，快递鸟提供，注意保管，不要泄漏')
+
+        ->group('ping++ 接口设置','MUUSHOP_PINGPAY_APIKEY,MUUSHOP_PINGPAY_APPID,MUUSHOP_PINGPAY_PUBLICKEY,MUUSHOP_PINGPAY_PUBLISHABLEKEY,MUUSHOP_PINGPAY_PRIVATEKEY,MUUSHOP_PINGPAY_WEBHOOKS')
+        ->group('物流查询配置','MUUSHOP_DELIVERY_EBUSINESS,MUUSHOP_DELIVERY_APPKEY')
+        
+		->data($data)
+        ->buttonSubmit('', '保存')
+		->display();
 	}
 	/**
 	 * @param  自定义导航
@@ -629,55 +643,32 @@ str;
 				}
 			break;
 			case 'order_delivery'://发货信息
-				if(IS_POST){
+					
 					$id = I('id');
-					empty($id) && $this->error('信息错误',1);
-					$courier_express = I('courier_express');
-					$courier_no = I('courier_no');
-					$courier_name = I('courier_name');
-					$courier_phone = I('courier_phone','','intval');
-					$delivery_info = array(
-						'courier_no'=>$courier_express,
-						'courier_no'=>$courier_no,
-						'courier_name'=>$courier_name,
-						'courier_phone'=>$courier_phone,
-					);
-					$order['delivery_info'] = json_encode($delivery_info);
-					$order['id'] = $id;
-					$ret = $this->order_model->add_or_edit_order($order);
-
-					if($ret){
-						$this->success('操作成功');
-					}else{
-						$this->error('操作失败','',3);
-					}
-
-				}else{
-					$id = I('id');
+					empty($id) && $this->error('订单参数错误',1);
 					$order = $this->order_model->get_order_by_id($id);
 					$delivery_info = json_decode($order['delivery_info'],true);
 					$delivery_info['id'] = $order['id'];
 					$order['send_time'] = (empty($order['send_time'])?'未发货':date('Y-m-d H:i:s',$order['send_time']));
 					$order['recv_time'] = (empty($order['recv_time'])?'未收货':date('Y-m-d H:i:s',$order['recv_time']));
-
 					$delivery_info['send_time'] = $order['send_time'];
 					$delivery_info['recv_time'] = $order['recv_time'];
-					$builder       = new AdminConfigBuilder();
-					$builder
-						->title('发货信息')
-						->suggest('发货信息')
-						->keyReadOnly('id','订单id')
-						->keyText('courier_express','快递公司')
-						->keyText('courier_no','快递单号')
-						->keyText('courier_name','快递员姓名')
-						->keyText('courier_phone','快递员电话')
-						->keyText('send_time','发货时间')
-						->keyText('recv_time','收货时间')
-						->buttonSubmit(U('muushop/order',array('action'=>'order_delivery')),'修改')
-						->buttonBack()
-						->data($delivery_info)
-						->display();
-				}
+					$delivery_info['order_no'] = $order['order_no'];
+					//组装获取物流信息的json数据
+					$requesData=array(
+						'OrderCode'=>$order_no,
+						'ShipperCode'=>$delivery_info['ShipperCode'],
+						'LogisticCode'=>$delivery_info['LogisticCode']
+					);
+					$requesData=json_encode($requesData);//转成json
+					//获取物流信息
+					$result = D('Muushop/MuushopDeliveryInfo')->getOrderTracesByJson($requesData);
+					dump($delivery_info);
+					echo $result;exit;
+					$this->assign('delivery_info',$delivery_info);
+					$this->assign('result',$result);
+					$this->display('Muushop@Admin/order_delivery');
+					
 				break;
 			case 'order_address':
 				$id = I('id');
@@ -755,7 +746,6 @@ str;
 				}
 				unset($val);
 
-				//dump($order);exit;
 				$this->assign('order',$order);
 				$this->display('Muushop@Admin/order_detail');
 			break;
@@ -780,15 +770,16 @@ str;
 								break;
 							case '2':
 								if(IS_POST){
-									$this->success('发货完成',U('Muushop/order'));
 									//发货
-									$courier_express = I('courier_express');
-									$courier_no = I('courier_no');
-									$courier_phone = I('courier_phone','','intval');
+									$ShipperValue = I('ShipperValue');//快递公司名称及编号，以,分隔
+									$LogisticCode = I('LogisticCode');//物流单号
+
+									$ShipperValue = explode(',',$ShipperValue);
+									
 									$delivery_info = array(
-										'courier_express' =>$courier_express,
-										'courier_no'=>$courier_no,
-										'courier_phone'=>$courier_phone,
+										'ShipperName' =>$ShipperValue[0],
+										'ShipperCode'=>$ShipperValue[1],
+										'LogisticCode'=>$LogisticCode,
 									);
 									$ret = $this->order_logic->send_good($order,$delivery_info);
 									if($ret){
@@ -853,7 +844,7 @@ str;
 				$status_select = $this->order_model->get_order_status_config_select();
 				$status_select2 = $this->order_model->get_order_status_list_select();
 				$show_type_array = array(array('id'=>0,'value'=>'订单信息'),array('id'=>1,'value'=>'订单状态'));
-				$totalCount = $order['count'];
+				$totalCount = $order['totalCount'];
 				$builder = new AdminListBuilder();
 				$builder
 					->title('订单管理')
@@ -883,7 +874,7 @@ str;
 
 				$builder
 					->keyDoAction('admin/muushop/order/action/order_detail/id/###','详情')
-					->keyDoAction('admin/muushop/order/action/order_delivery/id/###','发货信息')
+					->keyDoActionModalPopup('admin/muushop/order/action/order_delivery/id/###','物流')
 					->keyDoActionModalPopup('admin/muushop/order/action/edit_order_modal/id/###','操作');
 				$builder
 					->data($order['list'])
@@ -891,7 +882,6 @@ str;
 					->display();
 			break;
 		}
-
 	}
 
 	/*

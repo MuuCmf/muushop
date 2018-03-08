@@ -69,7 +69,7 @@ class MuushopOrderModel extends Model {
 			$where_str .=  implode(' and ', $where_arr);
 		}
 		$ret['list']  = $this->where($where_str)->order('create_time desc')->page($option['page'], $option['r'])->select();
-		$ret['count'] = $this->where($where_str)->count();
+		$ret['totalCount'] = $this->where($where_str)->count();
 		return $ret;
 	}
 

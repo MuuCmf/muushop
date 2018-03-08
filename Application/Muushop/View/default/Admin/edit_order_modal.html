@@ -14,16 +14,18 @@
             <div class="form-group">
                 <label class="col-sm-2">快递公司：</label>
                 <div class="col-md-8">
-                    <select class="form-control" name="courier_exoress">
+                    <select class="form-control" name="ShipperValue">
                         <volist name="delivery" id="v">
-                        <option value ="{$v.value}">{$v.title}</option>
+                        <option value ="{$v.title},{$v.code}">{$v.title}</option>
                         </volist>
                     </select>
                 </div>
             </div>
             <div class="form-group">
                 <label class="col-sm-2">快递单号：</label>
-                <div class="col-md-8"><input type="text" class="form-control" name="courier_no"></div>
+                <div class="col-md-8">
+                    <input type="text" class="form-control" name="LogisticCode">
+                </div>
             </div>
             <div class="form-group">
                 <label class="col-sm-2"></label>
