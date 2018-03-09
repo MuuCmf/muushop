@@ -83,6 +83,15 @@ class MuushopOrderModel extends Model {
 		$ret =$this->where($map)->find() ;
 		return $ret;
 	}
+	/*
+	 * 根据订单号获取订单
+	 */
+	public function get_order_by_order_no($order_no)
+	{	
+		$map['order_no']=$order_no;
+		$ret =$this->where($map)->find() ;
+		return $ret;
+	}
 
 
 	protected function _after_select(&$ret,$option)
@@ -147,7 +156,6 @@ class MuushopOrderModel extends Model {
 		return array(
 			array('id' => 0, 'value' => '全部'),
 			array('id' => self::ORDER_WAIT_USER_PAY, 'value' => '待付款'),
-//			array('id' => self::ORDER_WAIT_SHOP_ACCEPT, 'title' => '待接单'),
 			array('id' => self::ORDER_WAIT_FOR_DELIVERY, 'value' => '待发货'),
 			array('id' => self::ORDER_WAIT_USER_RECEIPT, 'value' => '待收货'),
 			array('id' => self::ORDER_UNDER_NEGOTATION, 'value' => '待退款'),
@@ -163,7 +171,6 @@ class MuushopOrderModel extends Model {
 	{
 		return array(
 			self::ORDER_WAIT_USER_PAY=> '待付款',
-//			self::ORDER_WAIT_SHOP_ACCEPT=> '待接单',
 			self::ORDER_WAIT_FOR_DELIVERY=> '待发货',
 			self::ORDER_WAIT_USER_RECEIPT=> '待收货',
 			self::ORDER_UNDER_NEGOTATION=> '待退款',

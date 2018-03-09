@@ -336,6 +336,82 @@ class PayController extends Controller {
         }
         return $extra;
     }
+    /**
+     * 支付成功后的webhook处理
+     * @return [type] [description]
+     */
+    public function webhooks(){
 
+       if(IS_POST){
+            $raw_data = file_get_contents('php://input');
+            $headers = \Pingpp\Util\Util::getRequestHeaders();
+            // 签名在头部信息的 x-pingplusplus-signature 字段
+            $signature = isset($headers['X-Pingplusplus-Signature']) ? $headers['X-Pingplusplus-Signature'] : NULL;
+            $result = $this->verify_signature($raw_data, $signature);
+            //$result = 1;
+            if ($result === 1) {
+                // 验证通过
+                echo 'verification success';
+            } elseif ($result === 0) {
+                http_response_code(400);
+                echo 'verification failed';
+                exit;
+            } else {
+                http_response_code(400);
+                echo 'verification error';
+                exit;
+            }
+            //接收到的处理事件
+            $event = json_decode($raw_data, true);
+            //在Ping++正确接收的webhoos回调后的处理
+            //支付成功后处理
+            if ($event['type'] == 'charge.succeeded') {
+                //处理订单数据
+                //获取订单号
+                $order_no = $event['data']['object']['order_no'];
+                $this->order_edit($order_no);
+            }
+            //退款成功后处理
+            if ($event['type'] == 'refund.succeeded') {
+                $refund = $event['data']['object'];
+                // ...
+                http_response_code(200); // PHP 5.4 or greater
+            }
+        }else{
+            echo "数据有误";
+            http_response_code(500);
+        }
+    }
 
+    private function verify_signature($raw_data, $signature) 
+    {
+        $pub_key_contents = $this->public_key;
+        // php 5.4.8 以上，第四个参数可用常量 OPENSSL_ALGO_SHA256
+        return openssl_verify($raw_data, base64_decode($signature), $pub_key_contents, 'sha256');
+    }
+
+    private function order_edit($order_no){
+        $order=D('Muushop/MuushopOrder')->get_order_by_order_no($order_no);
+        if($order['paid']!==1){//未支付状态就执行
+            
+            $wdata['id']=$order['id'];
+            $wdata['paid']=1;
+            $wdata['pingid']=$data['id'];
+            $wdata['paid_time'] = $data['time_paid'];
+            $wdata['status'] = 2;
+
+            $res=D('Muushop/MuushopOrder')->add_or_edit_order($wdata);
+            if(!$res){
+                echo '数据写入失败';
+                http_response_code(500);
+            }else{
+                //支付成功后的数据处理
+                echo '支付状态更新成功';
+                http_response_code(200);
+            }
+        }else{
+            echo '数据有误或已处理';
+            http_response_code(500);
+        }
+    }
 }
