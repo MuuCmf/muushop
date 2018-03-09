@@ -656,15 +656,15 @@ str;
 					$delivery_info['order_no'] = $order['order_no'];
 					//组装获取物流信息的json数据
 					$requesData=array(
-						'OrderCode'=>$order_no,
+						'OrderCode'=>$order['order_no'],
 						'ShipperCode'=>$delivery_info['ShipperCode'],
 						'LogisticCode'=>$delivery_info['LogisticCode']
 					);
 					$requesData=json_encode($requesData);//转成json
 					//获取物流信息
 					$result = D('Muushop/MuushopDeliveryInfo')->getOrderTracesByJson($requesData);
-					dump($delivery_info);
-					echo $result;exit;
+					$result = json_decode($result,true);
+					$result['Traces'] = array_reverse($result['Traces']);//反转数组
 					$this->assign('delivery_info',$delivery_info);
 					$this->assign('result',$result);
 					$this->display('Muushop@Admin/order_delivery');
@@ -874,7 +874,7 @@ str;
 
 				$builder
 					->keyDoAction('admin/muushop/order/action/order_detail/id/###','详情')
-					->keyDoActionModalPopup('admin/muushop/order/action/order_delivery/id/###','物流')
+					->keyDoActionModalPopup('admin/muushop/order/action/order_delivery/id/###','物流','',array('data-title'=>'物流查询'))
 					->keyDoActionModalPopup('admin/muushop/order/action/edit_order_modal/id/###','操作');
 				$builder
 					->data($order['list'])

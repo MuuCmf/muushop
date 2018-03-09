@@ -4,30 +4,31 @@ namespace Muushop\Model;
 use Think\Model;
 
 class MuushopDeliveryInfoModel extends Model{
-	//接口路径
+	//测试接口路径
+	//const ReqURL = 'http://sandboxapi.kdniao.cc:8080/kdniaosandbox/gateway/exterfaceInvoke.json';
+	//正式接口
 	const ReqURL = 'http://api.kdniao.cc/Ebusiness/EbusinessOrderHandle.aspx';
-
 	/**
 	 * Json方式 查询订单物流轨迹
 	 * @param json $datas 提交的数据数组 "{'OrderCode':'','ShipperCode':'YTO','LogisticCode':'12345678'}"
 	 */
-	public function getOrderTracesByJson($requesData){
+	public function getOrderTracesByJson($requestData){
 		
 		$Ebusiness = modC('MUUSHOP_DELIVERY_EBUSINESS','','Muushop');//请到快递鸟官网申请http://kdniao.com/reg
 		$AppKey = modC('MUUSHOP_DELIVERY_APPKEY','','Muushop');//电商加密私钥，快递鸟提供，注意保管，不要泄漏
 		if(empty($Ebusiness) || empty($AppKey)){
 			return '请完善接口Ebusiness或AppKey';
 		}
-		$requestData= $requesData;
+		
 		$datas = array(
 	        'EBusinessID' => $Ebusiness,
 	        'RequestType' => '1002',
 	        'RequestData' => urlencode($requestData) ,
 	        'DataType' => '2',
 	    );
-
+		
 	    $datas['DataSign'] = $this->encrypt($requestData, $AppKey);
-		$result=$this->sendPost(ReqURL, $datas);
+		$result=$this->sendPost(self::ReqURL, $datas);
 		
 		return $result;
 	}
