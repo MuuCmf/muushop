@@ -45,40 +45,85 @@ function _initialize()
 		switch($action)
 		{
 			case 'list':
-			$page = I('get.page',1,'intval');
-			$option['page'] = $page;
-			$option['r'] = 20;
-			$option['user_id'] = $this->user_id;
-			$order_list = $this->order_model->get_order_list($option);
-			$order_list['list'] = empty($order_list['list'])?array(): $order_list['list'];
-			array_walk($order_list['list'],function(&$a)
-			{
-				empty($a['products']) ||
-				array_walk($a['products'],function(&$b)
+				$page = I('get.page',1,'intval');
+				$option['page'] = $page;
+				$option['r'] = 20;
+				$option['user_id'] = $this->user_id;
+				$order_list = $this->order_model->get_order_list($option);
+				$order_list['list'] = empty($order_list['list'])?array(): $order_list['list'];
+				array_walk($order_list['list'],function(&$a)
 				{
-					$b['main_img'] = (empty($b['main_img'])?'':pic($b['main_img']));
+					empty($a['products']) ||
+					array_walk($a['products'],function(&$b)
+					{
+						$b['main_img'] = (empty($b['main_img'])?'':pic($b['main_img']));
+					});
 				});
-			});
-			foreach($order_list['list'] as &$val){
-				$val['paid_fee'] = sprintf("%01.2f", $val['paid_fee']/100);//将金额单位分转成元
-				foreach($val['products'] as &$products){
-					$products['temporary'] = explode(';',$products['sku_id']);
-					$products['id'] = $products['temporary'][0];
-					unset($products['temporary'][0]);//删除临时sku_id数组的ID
-					$products['sku'] =(empty($products['temporary'])?'':implode(',',$products['temporary']));
-					unset($products['temporary']);//删除临时sku_id数组
-				}
-				unset($products);
-			};
-			unset($val);
-			//dump($order_list);exit;
-			$this->assign('order_list',$order_list);
-			$this->assign('option', $option);
-			$this->display();
+				foreach($order_list['list'] as &$val){
+					$val['paid_fee'] = sprintf("%01.2f", $val['paid_fee']/100);//将金额单位分转成元
+					foreach($val['products'] as &$products){
+						$products['temporary'] = explode(';',$products['sku_id']);
+						$products['id'] = $products['temporary'][0];
+						unset($products['temporary'][0]);//删除临时sku_id数组的ID
+						$products['temporary'] = array_values($products['temporary']);
+						$products['sku'] =(empty($products['temporary'])?'':$products['temporary']);
+						unset($products['temporary']);//删除临时sku_id数组
+					}
+					unset($products);
+				};
+				unset($val);
+				$this->assign('order_list',$order_list);
+				$this->assign('option', $option);
+				$this->display('User/orders');
 			break;
 			case 'detail':
+				$id = I('get.id',1,'intval');
+				$order_no = I('get.order_no',1,'intval');
 
+				$order = $this->order_model->get_order_by_id($id);
+					$order['create_time'] =(empty($order['create_time'])?'':date('Y-m-d H:i:s',$order['create_time']));
+					$order['paid_time'] =(empty($order['paid_time'])?'未支付':date('Y-m-d H:i:s',$order['paid_time']));
+					$order['send_time'] = (empty($order['send_time'])?'未发货':date('Y-m-d H:i:s',$order['send_time']));
+					$order['recv_time'] = (empty($order['recv_time'])?'未收货':date('Y-m-d H:i:s',$order['recv_time']));
 
+					$order['user_info'] = query_user('nickname',$order['user_id']);
+
+					$order['address']["province"] = D('district')->where(array('id' => $order['address']["province"]))->getField('name');
+				    $order['address']["city"] = D('district')->where(array('id' => $order['address']["city"]))->getField('name');
+				    $order['address']["district"] = D('district')->where(array('id' => $order['address']["district"]))->getField('name');
+
+				    //设置支付类型
+				    switch ($order['pay_type']){
+				    	case 'balance':
+				    		$order['pay_type_cn']="余额支付";
+				    	break;
+				    	case 'delivery':
+				    		$order['pay_type_cn']="货到付款";
+				    	break;
+				    	case 'onlinepay':
+				    		$order['pay_type_cn']="在线支付";
+				    	break;
+				    	default:
+				    		$order['pay_type_cn']="未设置";
+				    }
+				    
+					$order['paid_fee']='¥ '.sprintf("%01.2f", $order['paid_fee']/100);
+					$order['delivery_fee']='¥ '.sprintf("%01.2f", $order['delivery_fee']/100);
+					$order['discount_fee']='- ¥ '.sprintf("%01.2f", $order['discount_fee']/100);
+
+					if(!empty($order['products'])){
+						foreach($order['products'] as &$val){
+							//商品列表价格单位转为元
+							$val['paid_price']='¥ '.sprintf("%01.2f", $val['paid_price']/100);
+							//sku_id转为数组
+							$val['sku'] = explode(';',$val['sku_id']);
+							unset($val['sku'][0]);
+						}
+					}
+					unset($val);
+					//dump($order);exit;
+					$this->assign('order',$order);
+					$this->display('User/order_detail');
 			break;
 		}
 	}

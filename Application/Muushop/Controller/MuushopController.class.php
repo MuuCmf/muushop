@@ -665,6 +665,8 @@ str;
 					$result = D('Muushop/MuushopDeliveryInfo')->getOrderTracesByJson($requesData);
 					$result = json_decode($result,true);
 					$result['Traces'] = array_reverse($result['Traces']);//反转数组
+
+
 					$this->assign('delivery_info',$delivery_info);
 					$this->assign('result',$result);
 					$this->display('Muushop@Admin/order_delivery');
@@ -725,27 +727,35 @@ str;
 
 			    //设置支付类型
 			    switch ($order['pay_type']){
-			    	case 1:
-			    		$order['pay_type_cn']="免费商品";
+			    	case 'balance':
+			    		$order['pay_type_cn']="余额支付";
 			    	break;
-			    	case 2:
+			    	case 'delivery':
 			    		$order['pay_type_cn']="货到付款";
 			    	break;
-			    	case 10:
+			    	case 'onlinepay':
 			    		$order['pay_type_cn']="在线支付";
 			    	break;
 			    	default:
 			    		$order['pay_type_cn']="未设置";
 			    }
 			    
-		    	//商品列表价格单位转为元
+				$order['paid_fee']='¥ '.sprintf("%01.2f", $order['paid_fee']/100);
+				$order['delivery_fee']='¥ '.sprintf("%01.2f", $order['delivery_fee']/100);
+				$order['discount_fee']='- ¥ '.sprintf("%01.2f", $order['discount_fee']/100);
+
 				if(!empty($order['products'])){
 					foreach($order['products'] as &$val){
+						//商品列表价格单位转为元
 						$val['paid_price']='¥ '.sprintf("%01.2f", $val['paid_price']/100);
+						//sku_id转为数组
+						$val['sku'] = explode(';',$val['sku_id']);
+						unset($val['sku'][0]);
 					}
 				}
 				unset($val);
-
+				//dump($order);exit;
+				$this->setTitle('订单详情');
 				$this->assign('order',$order);
 				$this->display('Muushop@Admin/order_detail');
 			break;

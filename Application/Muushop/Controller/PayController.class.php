@@ -368,8 +368,11 @@ class PayController extends Controller {
             if ($event['type'] == 'charge.succeeded') {
                 //处理订单数据
                 //获取订单号
-                $order_no = $event['data']['object']['order_no'];
-                $this->order_edit($order_no);
+                $data['id'] = $event['data']['object']['id'];
+                $data['order_no']= $event['data']['object']['order_no'];
+                $data['time_paid']= $event['data']['object']['time_paid'];
+                
+                $this->order_edit($data);
             }
             //退款成功后处理
             if ($event['type'] == 'refund.succeeded') {
@@ -390,8 +393,8 @@ class PayController extends Controller {
         return openssl_verify($raw_data, base64_decode($signature), $pub_key_contents, 'sha256');
     }
 
-    private function order_edit($order_no){
-        $order=D('Muushop/MuushopOrder')->get_order_by_order_no($order_no);
+    private function order_edit($data){
+        $order=D('Muushop/MuushopOrder')->get_order_by_order_no($data['order_no']);
         if($order['paid']!==1){//未支付状态就执行
             
             $wdata['id']=$order['id'];

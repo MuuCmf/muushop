@@ -115,7 +115,7 @@ tbody td {
 a.ftx-03, a.ftx03, div.ftx-03, div.ftx03, span.ftx-03, span.ftx03 {
     color: #aaa;
 }
-
+/*订单*/
 .order-tb .ordertime-cont {
     position: relative;
     float: left;
@@ -152,9 +152,6 @@ a.ftx-03, a.ftx03, div.ftx-03, div.ftx03, span.ftx-03, span.ftx03 {
     display: inline-block;
     vertical-align: middle;
 }
-
-
-
 .order-tb .deal-state-cont {
     position: relative;
     z-index: 10;
@@ -237,10 +234,6 @@ a.ftx-03, a.ftx03, div.ftx-03, div.ftx03, span.ftx-03, span.ftx03 {
     display: inline-block;
     display: block;
     float: left;
-    width: 255px;
-    margin-right: 10px;
-}
-.order-tb .goods-item {
     width: 340px;
     margin-right: 74px;
 }
@@ -261,14 +254,15 @@ a.ftx-03, a.ftx03, div.ftx-03, div.ftx03, span.ftx-03, span.ftx03 {
     width: 240px;
 }
 .order-tb .goods-item .p-name {
-    height: 36px;
-    line-height: 18px;
-    overflow: hidden;
     color: #333;
     text-align: left;
-}
-.order-tb .goods-item .p-name a {
-    color: #333;
+
+    .a-link {
+        display:block;
+        font-size:14px;
+        padding:0 5px;
+        margin:2px 0;
+    }
 }
 .order-tb .goods-number {
     float: left;
@@ -277,9 +271,23 @@ a.ftx-03, a.ftx03, div.ftx-03, div.ftx03, span.ftx-03, span.ftx03 {
     color: #aaa;
     font-family: verdana;
 }
-
 .order-tb .goods-repair {
     width: 104px;
+}
+.order-tb .goods-box .goods-item .sku_box {
+    
+
+    .sku_li_span {
+        border:1px solid #ddd;
+        background:#f6f6f6;
+        border-radius:2px;
+        font-size:12px;
+        padding:5px;
+        margin-right:5px;
+    }
+}
+.order-tb .operate {
+    padding:5px;
 }
 .goods-repair {
     float: right;

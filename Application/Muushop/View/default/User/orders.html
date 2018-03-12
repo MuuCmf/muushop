@@ -87,6 +87,11 @@
 	                        	<a href="{:U('Index/product',array('id'=>$products['id']))}" class="a-link" target="_blank" title="{$products.title}">
 	                        		{$products.title}
 	                        	</a>
+	                        	<div class="sku_box">
+	                        		<foreach name="products.sku" item="sku" >
+	                                 <span class="sku_li_span">{$sku}</span>  
+	                                </foreach>
+	                        	</div>
 	                        </div>
 	                    </div>
 	                </div>
@@ -118,9 +123,9 @@
 	                	<span>总额 ¥{$order.paid_fee}</span> <br>
 	                	<span class="ftx-13">
 	                	<switch name="order.pay_type">
-						    <case value="1">免费</case>
-						    <case value="2">货到付款</case>
-						    <case value="10">在线支付</case>
+						    <case value="onlinepay">在线支付</case>
+						    <case value="balance">余额支付</case>
+						    <case value="delivery">货到付款</case>
 						    <default />未设置
 						</switch>
 	                	</span>
@@ -134,8 +139,8 @@
 						    <case value="2">待发货</case>
 						    <case value="3">已发货</case>
 						    <case value="4">已完成</case>
-						    <case value="5">维权完成</case>
-						    <case value="8">维权中</case>
+						    <case value="5">退货完成</case>
+						    <case value="8">退货中</case>
 						    <case value="10">已取消</case>
 						    <default />待付款
 						</switch>
@@ -147,35 +152,36 @@
 	            		</a>
 					</if>
 	                <br>
-	                    <a href="#"  target="_blank">订单详情</a>
+	                    <a href="{:U('Muushop/User/Orders',array('action'=>'detail','id'=>$order['id'],'order_no'=>$order['order_no']))}"  target="_blank">订单详情</a>
 	                </div>
 	            </td>
 	            <td rowspan="1">
 	                <div class="operate">
 	                	<switch name="order.status">
 						    <case value="1">
-						    	<a href="#" class="btn btn-warning" target="_blank">
+						    	<a class="btn btn-success btn-block" data-toggle="pay_order">
 		                        	立即支付
 								</a>
-								<br>
-						    	<a target="_blank" href="#">
+						    	<a target="_blank" class="btn btn-warning btn-block" data-toggle="cannel_order">
 	                        		取消订单
 		                        </a>
 		                    </case>
 						    <case value="2">
-						    	<a target="_blank" href="#">
-	                        		取消订单
+						    	<a target="_blank" class="btn btn-warning btn-block" href="#">
+	                        		申请退款
 		                        </a>
-		                        <br>
-		                        <a target="_blank" href="#">
+		                        
+		                        <a target="_blank" data-toggle="">
 		                        	催单
 		                        </a>
 						    </case>
 						    <case value="3">
-						    	等待收货
+						    	<a target="_blank" class="btn btn-danger btn-block" href="#">
+						    		确认收货
+						    	</a>
 						    </case>
 						    <case value="4">
-						    	<a target="_blank" href="#">
+						    	<a target="_blank" class="btn  btn-info btn-block" href="#">
 	                        		评价
 		                        </a>
 		                        <br>
@@ -216,4 +222,12 @@
     </div>
 	</div>
 </div>
+</block>
+<block>
+<script>
+$(function(){
+	//取消订单
+	
+})
+</script>
 </block>

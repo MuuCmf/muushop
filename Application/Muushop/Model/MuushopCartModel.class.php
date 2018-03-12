@@ -38,7 +38,8 @@ class MuushopCartModel extends Model{
 
 	public function get_shop_cart_by_user_id($user_id)
 	{
-		return $this->where('user_id = '.$user_id)->select();
+		$map['user_id']=$user_id;
+		return $this->where($map)->select();
 	}
 
 	public function get_shop_cart_count_by_user_id($user_id)
@@ -57,14 +58,10 @@ class MuushopCartModel extends Model{
 
 	public function _after_select(&$ret,&$option)
 	{
-		empty($ret) ||
-		array_walk($ret, function (&$a)
+		empty($ret) || array_walk($ret, function (&$a)
 		{
 			$a['product'] = D('Muushop/MuushopProduct')->get_product_by_sku_id($a['sku_id']);
 		});
-
 	}
-
-
 }
 

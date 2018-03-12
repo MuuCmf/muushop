@@ -253,63 +253,8 @@ function _initialize()
 		}
 	}
 
-	/*
-	 * 确认收货
-	 */
-	public function do_receipt()
-	{
-		$this->init_user();
-		if (IS_POST)
-		{
-			if (!($order_id = I('id', false, 'intval'))
-				|| !($order = $this->order_model->get_order_by_id($order_id))
-				|| !($order['user_id'] == $this->user_id)
-			){
-				$this->error('参数错误');
-			}
-			$ret = $this->order_logic->recv_goods($order);
-			if ($ret){
-				$this->success('操作成功');
-			}else{
-				$this->error('操作失败,' . $this->order_logic->error_str);
-			}
-
-		}else{
-			$this->error('提交方式不合法');
-		}
-	}
-	/*
-	 * 订单详情
-	 */
-	public function orderdetail()
-	{
-		$id = I('id','','intval');
-		$order = $this->order_model->get_order_by_id($id);
-		$this->assign('order', $order);
-		$this->display();
-	}
-
-	public function test_pay($id='')
-	{
-		if(APP_DEBUG)
-		{
-			$order_model = D('Muushop/MuushopOrder');
-			$order_logic = D('Muushop/MuushopOrder','Logic');
-			$shop_order = $order_model->where('id ="'.$id.'"')->find();
-			empty($shop_order) && $this->error('订单号错误');
-			$shop_order['paid_time'] = time();
-			$shop_order['pay_type'] = 9;
-			$shop_order['pay_info'] =   array(
-				'info' => 'this is test pay',
-			);
-			$shop_order['pay_info'] = json_encode($shop_order['pay_info']);
-			$ret = $order_logic->pay_order($shop_order);//支付订单
-			echo $ret?'成功':'失败,'.$order_logic->error_str;exit;
-		}
-
-
-	}
-
+	
+	
 	public function commentlist()
 	{
 		$option['product_id']= I('product_id','','intval');

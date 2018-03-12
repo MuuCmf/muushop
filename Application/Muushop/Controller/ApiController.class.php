@@ -117,5 +117,55 @@ class ApiController extends Controller {
 		$this->ajaxReturn($result,'JSON');
 	}
 
+	/*
+	 * 取消订单
+	 */
+	public function cancel_order()
+	{
+		$this->init_user();
+		if (IS_POST){
+			if (!($order_id = I('id', false, 'intval'))
+				|| !($order = $this->order_model->get_order_by_id($order_id))
+				|| !($order['user_id'] == $this->user_id)
+			){
+				$this->error('参数错误');
+			}
+			$ret = $this->order_logic->cancal_order($order);
+			if ($ret){
+				$this->success('成功取消订单');
+			}else{
+				$this->error('取消失败,' . $this->order_logic->error_str);
+			}
+		}else{
+			$this->error('提交方式不合法');
+		}
+	}
+
+	/*
+	 * 确认收货
+	 */
+	public function do_receipt()
+	{
+		$this->init_user();
+		if (IS_POST)
+		{
+			if (!($order_id = I('id', false, 'intval'))
+				|| !($order = $this->order_model->get_order_by_id($order_id))
+				|| !($order['user_id'] == $this->user_id)
+			){
+				$this->error('参数错误');
+			}
+			$ret = $this->order_logic->recv_goods($order);
+			if ($ret){
+				$this->success('操作成功');
+			}else{
+				$this->error('操作失败,' . $this->order_logic->error_str);
+			}
+
+		}else{
+			$this->error('提交方式不合法');
+		}
+	}
+
 
 }

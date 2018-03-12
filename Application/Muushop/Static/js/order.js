@@ -1,0 +1,1 @@
+"use strict";$(function(){$.post("/Muushop/api/cancel_order",data,function(t){1==t.status?(toast.success(t.info,"温馨提示"),setTimeout(function(){window.location.href=t.url},1e3)):toast.error(t.info,"温馨提示")})});
