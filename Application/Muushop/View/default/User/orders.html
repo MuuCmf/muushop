@@ -39,19 +39,19 @@
                             <div class="state-txt">全部状态 <i class="icon-angle-down"></i></div>
                             <div class="state-list">
                                 <ul>
-                                    <li value="4096">
-                                        <a href="#none" clstag="click|keycount|orderlist|quanbuzhuangtai" class="curr"><b></b>全部状态</a>
+                                    <li>
+                                        <a class="curr"><b></b>全部状态</a>
                                     </li>
-                                    <li value="1">
-                                        <a href="#none" clstag="click|keycount|orderlist|dengdaifukuan"><b></b>等待付款</a>
+                                    <li>
+                                        <a><b></b>等待付款</a>
                                     </li>
-                                    <li value="128" clstag="click|keycount|orderlist|dengdaishouhuo">
+                                    <li>
                                         <a href="#none"><b></b>等待收货</a>
                                     </li>
-                                    <li value="1024">
-                                        <a href="#none" clstag="click|keycount|orderlist|yiwancheng"><b></b>已完成</a>
+                                    <li>
+                                        <a ><b></b>已完成</a>
                                     </li>
-                                    <li value="-1">
+                                    <li>
                                         <a href="#none" clstag="click|keycount|orderlist|yiquxiao"><b></b>已取消</a>
                                     </li>
                                 </ul>
@@ -87,20 +87,19 @@
 	                        	<a href="{:U('Index/product',array('id'=>$products['id']))}" class="a-link" target="_blank" title="{$products.title}">
 	                        		{$products.title}
 	                        	</a>
+	                        	<notempty name="products.sku">
 	                        	<div class="sku_box">
 	                        		<foreach name="products.sku" item="sku" >
 	                                 <span class="sku_li_span">{$sku}</span>  
 	                                </foreach>
 	                        	</div>
+	                        	</notempty>
 	                        </div>
 	                    </div>
 	                </div>
 	                <div class="goods-number">
 	                    x{$products.quantity}
 	                </div>
-		            <div class="goods-repair">
-	                     <a href="#" target="_blank">售后|退换货</a>
-	        	    </div>
 	        	</div>
 	        	</volist>
 	            </td>
@@ -162,35 +161,31 @@
 						    	<a class="btn btn-success btn-block" data-toggle="pay_order">
 		                        	立即支付
 								</a>
-						    	<a target="_blank" class="btn btn-warning btn-block" data-toggle="cannel_order">
+						    	<a class="btn btn-warning btn-block" data-toggle="cannel_order" data-id="{$order.id}">
 	                        		取消订单
 		                        </a>
 		                    </case>
 						    <case value="2">
-						    	<a target="_blank" class="btn btn-warning btn-block" href="#">
-	                        		申请退款
-		                        </a>
-		                        
-		                        <a target="_blank" data-toggle="">
+		                        <a data-toggle="">
 		                        	催单
 		                        </a>
 						    </case>
 						    <case value="3">
-						    	<a target="_blank" class="btn btn-danger btn-block" href="#">
+						    	<a target="_blank" class="btn btn-danger btn-block" data-toggle="do_receipt" data-id={$order.id}>
 						    		确认收货
 						    	</a>
+						    	<a class="btn btn-block">申请售后</a>
 						    </case>
 						    <case value="4">
-						    	<a target="_blank" class="btn  btn-info btn-block" href="#">
+						    	<a class="btn  btn-info btn-block">
 	                        		评价
 		                        </a>
-		                        <br>
-		                        <a href="#" class="btn btn-danger" target="_blank">
+		                        <a class="btn btn-danger btn-block">
 		                        	再次购买
 								</a>
 						    </case>
 						    <case value="5">
-							    <a href="#" class="btn btn-danger" target="_blank">
+							    <a href="#" class="btn btn-danger btn-block">
 		                        	再次购买
 								</a>
 						    </case>
@@ -198,7 +193,7 @@
 						    	维权中
 						    </case>
 						    <case value="10">
-						    	<a href="#" class="btn btn-danger" target="_blank">
+						    	<a class="btn btn-danger btn-block">
 	                        		再次购买
 								</a>
 						    </case>
@@ -223,11 +218,7 @@
 	</div>
 </div>
 </block>
-<block>
-<script>
-$(function(){
-	//取消订单
-	
-})
-</script>
+<block name="script">
+<script src="__JS__/common.js"></script>
+<script src="__JS__/order.js"></script>
 </block>

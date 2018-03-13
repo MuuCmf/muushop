@@ -877,10 +877,10 @@ str;
 
 				$option['show_type'] || $builder
 					->keyMap('pay_type','支付方式',$payment)
-					->keyMap('status','订单状态',$status_select)
 					->keyText('paid_fee','总价/元')
 					->keyText('discount_fee','已优惠的价格')
-					->keyText('delivery_fee','邮费');
+					->keyText('delivery_fee','邮费')
+					->keyMap('status','订单状态',$status_select);
 
 				$builder
 					->keyDoAction('admin/muushop/order/action/order_detail/id/###','详情')

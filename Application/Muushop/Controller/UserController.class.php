@@ -63,10 +63,18 @@ function _initialize()
 					$val['paid_fee'] = sprintf("%01.2f", $val['paid_fee']/100);//将金额单位分转成元
 					foreach($val['products'] as &$products){
 						$products['temporary'] = explode(';',$products['sku_id']);
+						
+						if(empty($products['temporary'][1])){
+							unset($products['temporary'][1]);
+						}
+
 						$products['id'] = $products['temporary'][0];
 						unset($products['temporary'][0]);//删除临时sku_id数组的ID
 						$products['temporary'] = array_values($products['temporary']);
-						$products['sku'] =(empty($products['temporary'])?'':$products['temporary']);
+						
+						if(!empty($products['temporary'])){//数组不为空时写sku
+							$products['sku'] =(empty($products['temporary'])?'':$products['temporary']);
+						}
 						unset($products['temporary']);//删除临时sku_id数组
 					}
 					unset($products);

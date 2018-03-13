@@ -122,23 +122,28 @@ class ApiController extends Controller {
 	 */
 	public function cancel_order()
 	{
-		$this->init_user();
-		if (IS_POST){
+		if (IS_POST &&  _need_login()){
 			if (!($order_id = I('id', false, 'intval'))
 				|| !($order = $this->order_model->get_order_by_id($order_id))
-				|| !($order['user_id'] == $this->user_id)
+				|| !($order['user_id'] == is_login())
 			){
-				$this->error('参数错误');
+				$result['status']=0;
+				$result['info'] = '参数错误';
 			}
 			$ret = $this->order_logic->cancal_order($order);
 			if ($ret){
-				$this->success('成功取消订单');
+				$result['status']=1;
+				$result['info'] = '订单取消成功';
+				$result['url'] = U('Muushop/user/orders');
 			}else{
-				$this->error('取消失败,' . $this->order_logic->error_str);
+				$result['status']=0;
+				$result['info'] = '取消失败';
 			}
 		}else{
-			$this->error('提交方式不合法');
+			$result['status']=0;
+			$result['info'] = '提交方式错误或未登陆';
 		}
+		$this->ajaxReturn($result,'JSON');
 	}
 
 	/*
@@ -146,25 +151,27 @@ class ApiController extends Controller {
 	 */
 	public function do_receipt()
 	{
-		$this->init_user();
-		if (IS_POST)
-		{
-			if (!($order_id = I('id', false, 'intval'))
-				|| !($order = $this->order_model->get_order_by_id($order_id))
-				|| !($order['user_id'] == $this->user_id)
-			){
-				$this->error('参数错误');
+		if (IS_POST &&  _need_login()){
+			if (!($order_id = I('id', false, 'intval')) || !($order = $this->order_model->get_order_by_id($order_id)) || !($order['user_id'] == $this->user_id)){
+				$result['status']=0;
+				$result['info'] = '参数错误';
 			}
 			$ret = $this->order_logic->recv_goods($order);
 			if ($ret){
-				$this->success('操作成功');
+				$result['status']=1;
+				$result['info'] = '确认成功';
+				$result['data'] = $ret;
+				$result['url'] = U('Muushop/user/orders');
 			}else{
-				$this->error('操作失败,' . $this->order_logic->error_str);
+				$result['status']=0;
+				$result['info'] = '确认失败';
 			}
 
 		}else{
-			$this->error('提交方式不合法');
+			$result['status']=0;
+			$result['info'] = '提交方式错误或未登陆';
 		}
+		$this->ajaxReturn($result,'JSON');
 	}
 
 

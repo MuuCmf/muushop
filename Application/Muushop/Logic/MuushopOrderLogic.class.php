@@ -257,9 +257,8 @@ class MuushopOrderLogic extends Model{
 	public function cancal_order($order)
 	{
 		if (!in_array($order['status'], array(MuushopOrderModel::ORDER_WAIT_USER_PAY,
-		                                  //ShopOrderModel::ORDER_WAIT_FOR_DELIVERY, 待发货时可以申请退款，不要取消
-		                                  MuushopOrderModel::ORDER_UNDER_NEGOTATION,
-		                                  MuushopOrderModel::ORDER_WAIT_SHOP_ACCEPT))
+		                                  	  MuushopOrderModel::ORDER_UNDER_NEGOTATION,
+		                                      MuushopOrderModel::ORDER_WAIT_SHOP_ACCEPT))
 		) {
 			$this->error_str = '错误的订单状态';
 			return false;
@@ -267,11 +266,9 @@ class MuushopOrderLogic extends Model{
 
 		$update = array(
 			'id' => $order['id'],
-			'status' => (!(CONTROLLER_NAME=='Index')?MuushopOrderModel::ORDER_SHOP_CANCELED: MuushopOrderModel::ORDER_CANCELED),
+			'status' => MuushopOrderModel::ORDER_CANCELED,
 		);
 		$this->startTrans();
-
-
 		if(!$this->order_model->add_or_edit_order($update))
 		{
 			$this->rollback();
@@ -284,13 +281,9 @@ class MuushopOrderLogic extends Model{
 				$this->rollback();
 				return false;
 			}
-
 		}
+		$this->commit();
 		Hook('AfterCancalOrder',$order);
-
-		//$this->commit();
-
-//		$order = $this->order_model->get_order_by_id($order['id']);
 		return true;
 	}
 
@@ -299,7 +292,6 @@ class MuushopOrderLogic extends Model{
 	 */
 	public function send_good($order,$deliver_info){
 		if ($order['status'] != MuushopOrderModel::ORDER_WAIT_FOR_DELIVERY) {
-//			setLastError(ERROR_BAD_STATUS);
 			$this->error_str = '订单状态错误';
 			return false;
 		}
@@ -321,7 +313,6 @@ class MuushopOrderLogic extends Model{
 	public  function recv_goods($order)
 	{
 		if ($order['status'] != MuushopOrderModel::ORDER_WAIT_USER_RECEIPT) {
-//			setLastError(ERROR_BAD_STATUS);
 			$this->error_str = '订单状态错误';
 			return false;
 		}

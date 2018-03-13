@@ -8,8 +8,9 @@ class MuushopOrderModel extends Model {
 
 	const PAY_TYPE_NULL      = 0; //未设置付款方式
 	const PAY_TYPE_FREE      = 1; //免费无需付款
-	const PAY_TYPE_CACHE     = 2; //货到付款
-	const PAY_TYPE_LINEPAY    = 10; //在线支付
+	const PAY_TYPE_CACHE     = 'delivery'; //货到付款
+	const PAY_TYPE_LINEPAY    = 'onlinepay'; //在线支付
+	const PAY_TYPE_BALANCE    = 'balance'; //余额支付
 	//const PAY_TYPE_WEIXINPAY = 11; //微信支付
 	const ORDER_WAIT_USER_PAY     = 1; //待付款
 	const ORDER_WAIT_FOR_DELIVERY = 2; //待发货
@@ -126,12 +127,9 @@ class MuushopOrderModel extends Model {
 	 */
 	public function add_or_edit_order($order)
 	{
-		if (empty($order['id']))
-		{
+		if (empty($order['id'])){
 			$ret = $this->add($order);
-		}
-		else
-		{
+		}else{
 			$ret = $this->where('id=' . $order['id'])->save($order);
 		}
 
