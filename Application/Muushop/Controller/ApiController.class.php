@@ -174,5 +174,36 @@ class ApiController extends Controller {
 		$this->ajaxReturn($result,'JSON');
 	}
 
+	/*
+	 * 订单评论
+	 */
+	public function comment()
+	{
+		if(IS_POST){
+
+			$product_comments = I('product_comment');
+			foreach($product_comments as &$product_comment){
+
+				$product_comment['user_id'] = $this->user_id;
+				$product_comment['product_id'] = explode(';',$product_comment['product_id'])[0];
+				if(!($product_comment =  $this->product_comment_model->create($product_comment)))
+				{
+					$this->error($this->product_comment_model->geterror());
+				}
+			}
+			$ret = $this->order_logic->add_product_comment($product_comments);
+			if(!$ret ){
+				$result['status']=0;
+				$result['info'] = '评论失败，'.$this->order_logic->error_str;
+			}
+			if($ret ){
+				$result['status']=1;
+				$result['info'] = '评论成功';
+				$result['url'] = U('Muushop/user/orders');
+			}
+		}
+		$this->ajaxReturn($result,'JSON');
+	}
+
 
 }

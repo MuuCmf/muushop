@@ -689,7 +689,7 @@ class MuushopOrderLogic extends Model{
 				return false;
 			}
 		}
-		//更改订单zhuangt
+		//更改订单状态
 		$may = array(
 			'id'=>$product_comments[0]['order_id'],
 			'user_id'=>$product_comments[0]['user_id'],

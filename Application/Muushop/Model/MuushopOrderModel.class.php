@@ -21,6 +21,7 @@ class MuushopOrderModel extends Model {
 	const ORDER_SHOP_CANCELED     = 9; //卖家取消订单
 	const ORDER_CANCELED          = 10; //已取消
 	const ORDER_WAIT_SHOP_ACCEPT  = 11; //等待卖家确认
+	const ORDER_COMMENT_OK        = 12; //评论完成
 
 	protected $_validate = array(
 		array('title', '1,64', '分类标题长度不对', 1, 'length'),
