@@ -138,8 +138,8 @@
 						    <case value="2">待发货</case>
 						    <case value="3">已发货</case>
 						    <case value="4">已完成</case>
-						    <case value="5">退货完成</case>
-						    <case value="8">退货中</case>
+						    <case value="5">退货中</case>
+						    <case value="6">退货完成</case>
 						    <case value="10">已取消</case>
 						    <default />待付款
 						</switch>
@@ -158,7 +158,7 @@
 	                <div class="operate">
 	                	<switch name="order.status">
 						    <case value="1">
-						    	<a class="btn btn-success btn-block" data-toggle="pay_order">
+						    	<a href="{:U('Muushop/pay/charge',array('order_no'=>$order['order_no'],'result_url'=>$result_url))}" class="btn btn-success btn-block" data-toggle="pay_order">
 		                        	立即支付
 								</a>
 						    	<a class="btn btn-warning btn-block" data-toggle="cannel_order" data-id="{$order.id}">
@@ -166,7 +166,12 @@
 		                        </a>
 		                    </case>
 						    <case value="2">
-		                        <a data-toggle="">
+						    	<if condition="($order.pay_type eq delivery)">
+						    	<a class="btn btn-warning btn-block" data-toggle="cannel_order" data-id="{$order.id}">
+	                        		取消订单
+		                        </a>
+		                    	</if>
+		                    	<a data-toggle="">
 		                        	催单
 		                        </a>
 						    </case>

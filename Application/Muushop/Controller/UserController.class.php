@@ -80,6 +80,10 @@ function _initialize()
 					unset($products);
 				};
 				unset($val);
+				//根据支付方式判断回调地址
+				$callback = modC('MUUSHOP_PAY_CALLBACK','','Muushop');
+				$result_url=urlencode($callback);//支付成功后跳转回的地址
+				$this->assign('result_url',$result_url);
 				$this->assign('order_list',$order_list);
 				$this->assign('option', $option);
 				$this->display('User/orders');

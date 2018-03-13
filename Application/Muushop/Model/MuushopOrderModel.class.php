@@ -16,10 +16,9 @@ class MuushopOrderModel extends Model {
 	const ORDER_WAIT_FOR_DELIVERY = 2; //待发货
 	const ORDER_WAIT_USER_RECEIPT = 3; //待收货
 	const ORDER_DELIVERY_OK       = 4; //已收货
-	const ORDER_COMMENT_OK        = 5; //已评价
-	const ORDER_NEGOTATION_OK     = 6; //协商完成
-	const ORDER_UNDER_NEGOTATION  = 8; //协商中(退货,换货)
-	const ORDER_SHOP_CANCELED     = 9; //店家已取消
+	const ORDER_UNDER_NEGOTATION  = 5; //退货中
+	const ORDER_NEGOTATION_OK     = 6; //退货完成
+	const ORDER_SHOP_CANCELED     = 9; //卖家取消订单
 	const ORDER_CANCELED          = 10; //已取消
 	const ORDER_WAIT_SHOP_ACCEPT  = 11; //等待卖家确认
 
@@ -156,7 +155,7 @@ class MuushopOrderModel extends Model {
 			array('id' => self::ORDER_WAIT_USER_PAY, 'value' => '待付款'),
 			array('id' => self::ORDER_WAIT_FOR_DELIVERY, 'value' => '待发货'),
 			array('id' => self::ORDER_WAIT_USER_RECEIPT, 'value' => '待收货'),
-			array('id' => self::ORDER_UNDER_NEGOTATION, 'value' => '待退款'),
+			array('id' => self::ORDER_UNDER_NEGOTATION, 'value' => '退货中'),
 			array('id' => self::ORDER_DELIVERY_OK, 'value' => '已完成'),
 			array('id' => self::ORDER_COMMENT_OK, 'value' => '已评价'),
 			array('id' => self::ORDER_CANCELED, 'value' => '已取消'),
@@ -171,7 +170,7 @@ class MuushopOrderModel extends Model {
 			self::ORDER_WAIT_USER_PAY=> '待付款',
 			self::ORDER_WAIT_FOR_DELIVERY=> '待发货',
 			self::ORDER_WAIT_USER_RECEIPT=> '待收货',
-			self::ORDER_UNDER_NEGOTATION=> '待退款',
+			self::ORDER_UNDER_NEGOTATION=> '退货中',
 			self::ORDER_DELIVERY_OK => '已完成',
 			self::ORDER_COMMENT_OK=> '已评价',
 			self::ORDER_CANCELED=> '已取消',
