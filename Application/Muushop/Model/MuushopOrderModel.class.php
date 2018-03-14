@@ -158,7 +158,7 @@ class MuushopOrderModel extends Model {
 			array('id' => self::ORDER_WAIT_USER_RECEIPT, 'value' => '待收货'),
 			array('id' => self::ORDER_UNDER_NEGOTATION, 'value' => '退货中'),
 			array('id' => self::ORDER_DELIVERY_OK, 'value' => '已完成'),
-			array('id' => self::ORDER_COMMENT_OK, 'value' => '已评价'),
+			array('id' => self::ORDER_COMMENT_OK, 'value' => '已完成'),
 			array('id' => self::ORDER_CANCELED, 'value' => '已取消'),
 			array('id' => self::ORDER_SHOP_CANCELED, 'value' => '卖家取消'),
 			array('id' => self::ORDER_NEGOTATION_OK, 'value' => '已退款'),
@@ -173,7 +173,7 @@ class MuushopOrderModel extends Model {
 			self::ORDER_WAIT_USER_RECEIPT=> '待收货',
 			self::ORDER_UNDER_NEGOTATION=> '退货中',
 			self::ORDER_DELIVERY_OK => '已完成',
-			self::ORDER_COMMENT_OK=> '已评价',
+			self::ORDER_COMMENT_OK=> '已完成',//评价完成
 			self::ORDER_CANCELED=> '已取消',
 			self::ORDER_SHOP_CANCELED=> '卖家取消',
 			self::ORDER_NEGOTATION_OK=> '已退款',

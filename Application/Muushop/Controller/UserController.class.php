@@ -250,6 +250,16 @@ function _initialize()
 
 	/*
 	 * 订单评论
+	 * {
+	 * product_id:
+	 * user_id:
+	 * order_id:
+	 * images:
+	 * score:
+	 * brief:
+	 * sku_id:
+	 * 
+	 * }
 	 */
 	public function comment()
 	{
@@ -258,14 +268,12 @@ function _initialize()
 			$product_comments = I('product_comment');
 			foreach($product_comments as &$product_comment)
 			{
-				$product_comment['user_id'] = $this->user_id;
+				$product_comment['user_id'] = is_login();
 				$product_comment['product_id'] = explode(';',$product_comment['product_id'])[0];
 				if(!($product_comment =  $this->product_comment_model->create($product_comment)))
 				{
 					$this->error($this->product_comment_model->geterror());
 				}
-
-
 			}
 			$ret = $this->order_logic->add_product_comment($product_comments);
 			if(!$ret )
@@ -281,6 +289,26 @@ function _initialize()
 		{
 			$id = I('id','','intval');
 			$order = $this->order_model->get_order_by_id($id);
+			foreach($order['products'] as &$products){
+				$products['temporary'] = explode(';',$products['sku_id']);
+				
+				if(empty($products['temporary'][1])){
+					unset($products['temporary'][1]);
+				}
+
+				$products['product_id'] = $products['temporary'][0];
+				unset($products['temporary'][0]);//删除临时sku_id数组的ID
+				$products['temporary'] = array_values($products['temporary']);
+				
+				if(!empty($products['temporary'])){//数组不为空时写sku
+					$products['sku'] =(empty($products['temporary'])?'':$products['temporary']);
+				}
+				unset($products['temporary']);//删除临时sku_id数组
+
+				$products['main_img'] = getThumbImageById($products['main_img'],200,200);
+			}
+			unset($products);
+			//dump($order);exit;
 			$this->assign('order', $order);
 			$this->assign('products', $order['products']);
 			$this->display();

@@ -1,0 +1,69 @@
+<extend name="Public/common"/>
+<block name="style">
+	<style>
+
+	</style>
+</block>
+<block name="body">
+<div id="main-container" class="container">
+	<div class="col-xs-2">
+		<!--用户中心导航-->
+		<include file="User/_nav"/>
+	</div>
+
+	<div class="col-xs-10">
+
+	<div class="common_box">
+		<h3>评价订单</h3>
+	</div>
+
+	<div class="common_box comment_box margin-top-10 clearfix">
+	    <volist name="order.products" id="products">
+        <div class="goods-box clearfix">
+            <div class="goods-item">
+                <div class="p-img">
+                    <a href="{:U('Index/product',array('id'=>$products['id']))}" target="_blank">
+                    <img src="{$products.main_img}" title="{$products.title}" width="60" height="60">
+                    </a>
+                </div>
+                <div class="p-msg">
+                    <div class="p-name">
+                    	<a href="{:U('Index/product',array('id'=>$products['id']))}" class="a-link" target="_blank" title="{$products.title}">
+                    		{$products.title}
+                    	</a>
+                    	<notempty name="products.sku">
+                    	<div class="sku_box">
+                    		<foreach name="products.sku" item="sku" >
+                             <span class="sku_li_span">{$sku}</span>  
+                            </foreach>
+                    	</div>
+                    	</notempty>
+                    </div>
+                </div>
+            </div>
+            <div class="goods-number">
+                x{$products.quantity}
+            </div>
+    	</div>
+    	<div class="comment_info_box">
+        	<input name="product_id" value="{$products.product_id}" type="hidden" />
+        	<input name="order_id" value="{$order.id}" type="hidden" />
+        	<input name="score" value="" type="hidden" />
+
+        	
+          <div id="startone"  class="block clearfix" >
+                <div class="star_score"></div>
+                <p style="float:left;">您的评分：<span class="fenshu"></span> 分</p>
+                <div class="attitude"></div>
+          </div>
+        	<textarea>说点啥~</textarea>
+        </div>
+    	</volist>
+    </div>
+	</div>
+</div>
+<script type="text/javascript" src="__JS__/startScore.js"></script>
+<script>
+    scoreFun($("#startone"));
+</script>
+</block>

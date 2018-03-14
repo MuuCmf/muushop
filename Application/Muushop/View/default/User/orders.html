@@ -171,8 +171,8 @@
 	                        		取消订单
 		                        </a>
 		                    	</if>
-		                    	<a data-toggle="">
-		                        	催单
+		                    	<a>
+		                        	配货中
 		                        </a>
 						    </case>
 						    <case value="3">
@@ -182,24 +182,25 @@
 						    	<a class="btn btn-block">申请售后</a>
 						    </case>
 						    <case value="4">
-						    	<a class="btn  btn-info btn-block">
+						    	<a class="btn  btn-info btn-block" href="{:U('Muushop/User/comment',array('id'=>$order['id']))}">
 	                        		评价
 		                        </a>
-		                        <a class="btn btn-danger btn-block">
-		                        	再次购买
-								</a>
+		                        
 						    </case>
 						    <case value="5">
 							    <a href="#" class="btn btn-danger btn-block">
-		                        	再次购买
+		                        	查看进度
 								</a>
 						    </case>
 						    <case value="8">
 						    	维权中
 						    </case>
 						    <case value="10">
-						    	<a class="btn btn-danger btn-block">
-	                        		再次购买
+						    	
+						    </case>
+						    <case value="12">
+						    	<a class="">
+	                        		已评价
 								</a>
 						    </case>
 						    <default />
