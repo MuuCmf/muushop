@@ -1,10 +1,9 @@
 <extend name="Public/common"/>
 <block name="style">
-	<style>
 
-	</style>
 </block>
 <block name="body">
+
 <div id="main-container" class="container">
 	<div class="col-xs-2">
 		<!--用户中心导航-->
@@ -17,53 +16,62 @@
 		<h3>评价订单</h3>
 	</div>
 
-	<div class="common_box comment_box margin-top-10 clearfix">
+	<div class="comment_box margin-top-10 clearfix">
 	    <volist name="order.products" id="products">
-        <div class="goods-box clearfix">
-            <div class="goods-item">
-                <div class="p-img">
-                    <a href="{:U('Index/product',array('id'=>$products['id']))}" target="_blank">
-                    <img src="{$products.main_img}" title="{$products.title}" width="60" height="60">
-                    </a>
-                </div>
-                <div class="p-msg">
-                    <div class="p-name">
-                    	<a href="{:U('Index/product',array('id'=>$products['id']))}" class="a-link" target="_blank" title="{$products.title}">
-                    		{$products.title}
-                    	</a>
-                    	<notempty name="products.sku">
-                    	<div class="sku_box">
-                    		<foreach name="products.sku" item="sku" >
-                             <span class="sku_li_span">{$sku}</span>  
-                            </foreach>
-                    	</div>
-                    	</notempty>
-                    </div>
-                </div>
-            </div>
-            <div class="goods-number">
-                x{$products.quantity}
-            </div>
-    	</div>
-    	<div class="comment_info_box">
-        	<input name="product_id" value="{$products.product_id}" type="hidden" />
-        	<input name="order_id" value="{$order.id}" type="hidden" />
-        	<input name="score" value="" type="hidden" />
+        <div class="common_box margin-bottom-10">
+          <div class="goods-box clearfix">
+              <div class="goods-item">
+                  <div class="p-img">
+                      <a href="{:U('Index/product',array('id'=>$products['id']))}" target="_blank">
+                      <img src="{$products.main_img}" title="{$products.title}" width="60" height="60">
+                      </a>
+                  </div>
+                  <div class="p-msg">
+                      <div class="p-name">
+                      	<a href="{:U('Index/product',array('id'=>$products['id']))}" class="a-link" target="_blank" title="{$products.title}">
+                      		{$products.title}
+                      	</a>
+                      	<notempty name="products.sku">
+                      	<div class="sku_box">
+                      		<foreach name="products.sku" item="sku" >
+                               <span class="sku_li_span">{$sku}</span>  
+                              </foreach>
+                      	</div>
+                      	</notempty>
+                      </div>
 
-        	
-          <div id="startone"  class="block clearfix" >
-                <div class="star_score"></div>
-                <p style="float:left;">您的评分：<span class="fenshu"></span> 分</p>
-                <div class="attitude"></div>
-          </div>
-        	<textarea>说点啥~</textarea>
+                      <div class="goods-number">
+                          x{$products.quantity}
+                      </div>
+                  </div>
+              </div>
+
+      	</div>
+      	<div class="comment_info_box" data-toggle="comment_info">
+          	<input name="product_id" value="{$products.product_id}" type="hidden" />
+          	<input name="order_id" value="{$order.id}" type="hidden" />
+            <input name="sku_id" value="{$products.sku_id}" type="hidden" />
+            <div id="start_{$products.product_id}"  class="block clearfix" >
+              <div class="star_score"></div>
+              <p style="float:left;">您的评分：<span class="fenshu"></span> 分</p>
+              <div class="attitude"></div>
+            </div>
+          	<textarea name="brief" class="form-control" rows="3" placeholder="说点啥~"></textarea>
         </div>
+        <script>
+          $(function(){
+            scoreFun($("#start_{$products.product_id}"));
+          });
+        </script>
+      </div>
     	</volist>
+
+      <botton class="btn btn-block" id="submit">提交评价</botton>
     </div>
 	</div>
 </div>
+</block>
+<block name="script">
 <script type="text/javascript" src="__JS__/startScore.js"></script>
-<script>
-    scoreFun($("#startone"));
-</script>
+<script src="__JS__/comment.js"></script>
 </block>

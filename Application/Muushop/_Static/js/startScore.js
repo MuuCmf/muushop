@@ -1,4 +1,5 @@
-function scoreFun(object, opts) {
+
+	function scoreFun(object, opts) {
 	var defaults = {
 		fen_d: 16,
 		ScoreGrade: 10,
@@ -82,4 +83,5 @@ function scoreFun(object, opts) {
 		countScore.text(scor);
 		atti.text(atu)
 	}
-};
+	};
+

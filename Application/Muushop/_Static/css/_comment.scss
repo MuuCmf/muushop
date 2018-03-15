@@ -3,57 +3,69 @@
 	margin:0 0 20px 0; 
 	padding-top:10px; 
 	line-height:21px;
-}
-.block .star_score{ 
-	float:left;
+
+	.star_score{ 
+		float:left;
+	}
+
+	p,.attitude{ 
+		padding-left:20px; 
+		line-height:21px; 
+		display:inline-block;
+	}
+	p span{ 
+		color:#C00; 
+		font-size:16px; 
+		font-family:Georgia, "Times New Roman", Times, serif;
+	}
+
 }
 .star_list{
 	height:21px;
 	margin:50px; 
 	line-height:21px;
 }
-.block p,.block .attitude{ 
-	padding-left:20px; 
-	line-height:21px; 
-	display:inline-block;
-}
-.block p span{ 
-	color:#C00; 
-	font-size:16px; 
-	font-family:Georgia, "Times New Roman", Times, serif;
-}
 .star_score { 
 	background:url('../images/stark2.png');
 	 width:160px;
-	  height:21px; 
-	  position:relative; 
-	}
-.star_score a{ 
+	 height:21px; 
+	 position:relative; 
+
+	a{ 
 	height:21px; 
 	display:block; 
 	text-indent:-999em; 
 	position:absolute;
 	left:0;
+
+		&:hover{ 
+			background:url('../images/stars2.png');
+			left:0;
+		}
+	}
+	a.clibg{ 
+		background:url('../images/stars2.png');
+		left:0;
+	}
 }
-.star_score a:hover{ 
-	background:url('../images/stars2.png');
-	left:0;
-}
-.star_score a.clibg{ 
-	background:url('../images/stars2.png');
-	left:0;
-}
+
 /*星星样式*/
 .show_number{ 
 	padding-left:50px; 
 	padding-top:20px;
-}
-.show_number li{ 
-	width:240px; 
-	border:1px solid #ccc; 
-	padding:10px; 
-	margin-right:5px; 
-	margin-bottom:20px;
+
+	li{ 
+		width:240px; 
+		border:1px solid #ccc; 
+		padding:10px; 
+		margin-right:5px; 
+		margin-bottom:20px;
+
+		span{ 
+			display:inline-block; 
+			line-height:21px;
+		}
+	}
 }
 .atar_Show{
 	background:url('../images/stark2.png'); 
@@ -61,14 +73,37 @@
 	height:21px;  
 	position:relative; 
 	float:left; 
+
+	p{ 
+		background:url('../images/stars2.png');
+		left:0; 
+		height:21px; 
+		width:134px;
+	}
 }
-.atar_Show p{ 
-	background:url('../images/stars2.png');
-	left:0; 
-	height:21px; 
-	width:134px;
-}
-.show_number li span{ 
-	display:inline-block; 
-	line-height:21px;
+
+.comment_box {
+
+	.goods-box {
+		margin-bottom:15px;
+		padding:10px;
+
+		.goods-item {
+
+			.p-img {
+				float:left;
+				width:60px;
+				height:60px;
+			}
+			.p-msg {
+				margin-left:60px;
+				padding:0 10px;
+			}
+		}
+	}
+
+	.comment_info_box {
+		margin-bottom:15px;
+		padding:10px;
+	}
 }
