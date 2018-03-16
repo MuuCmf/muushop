@@ -22,6 +22,7 @@ function _initialize()
 		$this->order_logic        = D('Muushop/MuushopOrder', 'Logic');
 		$this->user_address       = D('Muushop/MuushopUserAddress');
 		$this->user_coupon        = D('Muushop/MuushopUserCoupon');
+		$this->product_comment_model    = D('Muushop/MuushopProductComment');
 
 	}
 	/*商城用户中心
@@ -266,6 +267,10 @@ function _initialize()
 		if(IS_POST)
 		{
 			$product_comments = I('product_comment');
+		
+
+			$product_comments = json_decode($product_comments,true);
+			//dump($product_comments);exit;
 			foreach($product_comments as &$product_comment)
 			{
 				$product_comment['user_id'] = is_login();
@@ -282,7 +287,7 @@ function _initialize()
 			}
 			if($ret )
 			{
-				$this->success('评论成功');
+				$this->success('评论成功',U('user/orders'));
 			}
 		}
 		else

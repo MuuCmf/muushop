@@ -10,6 +10,8 @@ $(function(){
       obj.product_id = product_id;
       var order_id = _this.find('[name="order_id"]').val();
       obj.order_id = order_id;
+      var images = _this.find('[name="images"]').val();
+      obj.images = images;
       var brief = _this.find('[name="brief"]').val();
       obj.brief = brief;
       var sku_id = _this.find('[name="sku_id"]').val();
@@ -30,7 +32,21 @@ $(function(){
   $('#submit').click(function(){
       var cData = assembleData();
       var comment_json = JSON.stringify(cData);
+
+      var data = {
+        product_comment : comment_json
+      }
+      $.post('/Muushop/user/comment',data,function (ret) {
+          if(ret.status==1){
+              toast.success(ret.info, '温馨提示');
+              setTimeout(function () {
+                  window.location.href = ret.url;
+              }, 1000);
+          }else{
+              toast.error(ret.info, '温馨提示');
+          }
+      })
       console.log(comment_json);
-      
   })
-})
+});
+
