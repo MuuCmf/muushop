@@ -669,7 +669,7 @@ str;
 
 					$this->assign('delivery_info',$delivery_info);
 					$this->assign('result',$result);
-					$this->display('Muushop@Admin/order_delivery');
+					$this->display('Muushop@Public/order_delivery');
 					
 				break;
 			case 'order_address':
@@ -1231,16 +1231,15 @@ str;
 					->ajaxButton(U('shop/product_comment',array('action'=>'edit_status','status'=>1)),'','审核通过')
 					->ajaxButton(U('shop/product_comment',array('action'=>'edit_status','status'=>2)),'','审核不通过')
 					->keyId()
-					->keyJoin('product_id','商品','id','title','shop_product','/admin/shop/product')
-					->keyJoin('order_id','订单','id','id','shop_order','/admin/shop/order')
+					->keyJoin('product_id','商品','id','title','muushop_product','/admin/muushop/product')
+					->keyJoin('order_id','订单','id','id','muushop_order','/admin/muushop/order')
 					->keyJoin('user_id','用户','uid','nickname','member','/admin/user/index')
 					->keyText('score','星数')
 					->keyText('brief','评论内容')
 					->keyTime('create_time','评论时间')
 					->keyMap('status','状态',array('0'=>'未审核','1'=>'已通过','2'=>'未通过'))
-//					->keyDoActionModalPopup('admin/shop/product_comment/action/show_pic/id/###','查看评论图片','操作')
 					->data($product_comment['list'])
-					->pagination($product_comment['count'], $option['r'])
+					->pagination($product_comment['totalCount'], $option['r'])
 					->display();
 				break;
 		}

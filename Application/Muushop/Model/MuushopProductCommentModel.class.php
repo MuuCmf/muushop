@@ -24,20 +24,16 @@ class MuushopProductCommentModel extends Model{
 
 	public function edit_status_product_comment($ids,$status)
 	{
-		is_array($ids) ||
-		$ids = explode(',',$ids);
+		is_array($ids) || $ids = explode(',',$ids);
 		return $this->where('id in ('.implode(',',$ids).')')->save(array('status'=>$status));
 
 	}
 
 	public function add_or_edit_product_comment($product_comment)
 	{
-		if(!empty($product_comment['id']))
-		{
+		if(!empty($product_comment['id'])){
 			return	$this->save($product_comment);
-		}
-		else
-		{
+		}else{
 			return	$this->add($product_comment);
 		}
 	}
@@ -59,7 +55,7 @@ class MuushopProductCommentModel extends Model{
 		$option['r']    = (empty($option['r']) ? 10 : $option['r']);
 
 		$ret['list']  = $this->where($where_str)->order($order_str)->page($option['page'], $option['r'])->select();
-		$ret['count'] = $this->where($where_str)->count();
+		$ret['totalCount'] = $this->where($where_str)->count();
 
 		return $ret;
 	}

@@ -135,6 +135,12 @@
                 border-radius: 5px;
                 background:#f60;
             }
+            @media screen and (max-width:768px){
+                .btn-muushop {
+                    width:100%;
+                    margin:10px auto;
+                }
+            }
             .addCartNow {
                 background:#fff;
                 border:2px solid #f60;
@@ -192,5 +198,36 @@
     
     .detail-margin {
         
+    }
+
+
+    #comment {
+
+        .comment-item {
+            margin:15px auto;
+
+            .score{
+
+                span {
+                    display: inline-block;
+                    line-height: 21px;
+                }
+            }
+
+            .brief {
+                margin:10px auto;
+            }
+            .sku {
+                span.sku_item {
+                    display: inline-block;
+                    margin-right:5px;
+                    padding:5px;
+                    background:#eee;
+                }
+                span.create_time {
+                    display: inline-block;
+                }
+            }
+        }
     }
 }

@@ -89,6 +89,28 @@ function _initialize()
 				$this->assign('option', $option);
 				$this->display('User/orders');
 			break;
+			case 'delivery_info':
+				$id = I('get.id',0,'intval');
+				empty($id) && $this->error('订单参数错误',1);
+				$order = $this->order_model->get_order_by_id($id);
+				$delivery_info = json_decode($order['delivery_info'],true);
+				//组装获取物流信息的json数据
+				$requesData=array(
+					'OrderCode'=>$order['order_no'],
+					'ShipperCode'=>$delivery_info['ShipperCode'],
+					'LogisticCode'=>$delivery_info['LogisticCode']
+				);
+				$requesData=json_encode($requesData);//转成json
+				//获取物流信息
+				$result = D('Muushop/MuushopDeliveryInfo')->getOrderTracesByJson($requesData);
+				$result = json_decode($result,true);
+				$result['Traces'] = array_reverse($result['Traces']);//反转数组
+
+				$this->assign('delivery_info',$delivery_info);
+				$this->assign('result',$result);
+				$this->display('Muushop@Public/order_delivery');
+
+			break;
 			case 'detail':
 				$id = I('get.id',1,'intval');
 				$order_no = I('get.order_no',1,'intval');

@@ -13,6 +13,7 @@ class ApiController extends Controller {
 	protected $delivery_model;
 	protected $user_coupon;
 	protected $coupon_logic;
+	protected $product_comment_model;
 
 	function _initialize()
 	{   
@@ -24,6 +25,7 @@ class ApiController extends Controller {
 		$this->delivery_model     = D('Muushop/MuushopDelivery');
 		$this->user_coupon        = D('Muushop/MuushopUserCoupon');
 		$this->coupon_logic       = D('Muushop/MuushopCoupon', 'Logic');
+		$this->product_comment_model = D('Muushop/MuushopProductComment');
 	}
 
 	
@@ -174,33 +176,41 @@ class ApiController extends Controller {
 		$this->ajaxReturn($result,'JSON');
 	}
 
-	/*
+	/**
 	 * 订单评论
+	 * @param  [type] $id [商品ID]
+	 * @return [type]     [description]
 	 */
-	public function comment()
+	public function comment($page = 1, $r = 20)
 	{
-		if(IS_POST){
+		//评价嗮图
+		$product_id = I('get.product_id',0,'intval');
+		$map['status'] = 1;
+		$map['product_id'] = $product_id;
+		$map['page'] = $page;
+		$map['r'] = $r;
 
-			$product_comments = I('product_comment');
-			foreach($product_comments as &$product_comment){
 
-				$product_comment['user_id'] = $this->user_id;
-				$product_comment['product_id'] = explode(';',$product_comment['product_id'])[0];
-				if(!($product_comment =  $this->product_comment_model->create($product_comment)))
-				{
-					$this->error($this->product_comment_model->geterror());
-				}
+		$comment = $this->product_comment_model->get_product_comment_list($map);
+
+		foreach($comment['list'] as &$val){
+			if(empty($val['brief'])){
+				$val['brief'] = '此用户未填写评价内容';
 			}
-			$ret = $this->order_logic->add_product_comment($product_comments);
-			if(!$ret ){
-				$result['status']=0;
-				$result['info'] = '评论失败，'.$this->order_logic->error_str;
-			}
-			if($ret ){
-				$result['status']=1;
-				$result['info'] = '评论成功';
-				$result['url'] = U('Muushop/user/orders');
-			}
+			$val['sku'] = explode(';',$val['sku_id']);
+			unset($val['sku'][0]);
+			$val['sku'] = array_values($val['sku']);
+			$val['create_time'] = friendlyDate($val['create_time']);
+		}
+		unset($val);
+		
+		if($comment){
+			$result['status']=1;
+			$result['info'] = 'success';
+			$result['data'] = $comment;
+		}else{
+			$result['status']=0;
+			$result['info'] = 'error';
 		}
 		$this->ajaxReturn($result,'JSON');
 	}

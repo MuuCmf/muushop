@@ -152,12 +152,11 @@ class IndexController extends PublicController {
 		if($product['sku_table']){
 			$minPrice= intval($product['price']);
 			$maxPrice= intval($product['price']);
-			//dump($product['sku_table']['info']);exit;
+
 			foreach($product['sku_table']['info'] as $val){
 				if($val['price']==''){
 					$val['price']= intval($product['price']);
 				}
-				//dump($val['price']);
 				if($val['price']<=$minPrice){
 					$minPrice = $val['price'];
 				}
@@ -204,47 +203,13 @@ class IndexController extends PublicController {
 		$product_sku = json_encode($product['sku_table']);
 		//售后保障
 		$service = modC('MUUSHOP_SHOW_SERVICE','','Muushop');
-
+		
 		$this->assign('product',$product);
 		$this->assign('product_sku',$product_sku);
 		$this->assign('service',$service);
 		$this->assign('sharedata', $sharedata);
 		$this->display();
 	}
-
-	/*
-	 * 商城建议
-	 */
-	public function suggest()
-	{
-		$this->init_user();
-		if (IS_POST)
-		{
-			//提交处理
-			$message = $this->message_model->create();
-			if (!$message)
-			{
-				$this->error($this->message_model->getError());
-			}
-			$message['user_id'] = $this->user_id;
-			$ret                = $this->message_model->add_or_edit_shop_message($message);
-			if ($ret)
-			{
-				$this->success('提交成功。');
-			}
-			else
-			{
-				$this->error('提交失败。');
-			}
-		}
-		else
-		{
-			$this->display();
-		}
-	}
-
-	
-
 
 	public function preview_delivery()
 	{

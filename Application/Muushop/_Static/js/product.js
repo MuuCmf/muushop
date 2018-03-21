@@ -123,3 +123,111 @@ $(function(){
         countInput.val(parseInt(countInput.val())+1);
     });
 })
+
+//评价
+$(function(){
+
+    //默认加载第一页
+    ajax_get(1);
+
+    function ajax_get(page,r){
+
+        if(page=='' || page=='undefined'){
+            page = 1;
+        }
+        if(r=='' || r=='undefined'){
+            r=10;
+        }
+        var product_id = $('[data-toggle="product_id"]').val();
+        var url = '/muushop/api/comment/page/'+page+'/r/'+r+'/product_id/'+product_id;
+        $.get(url,function(ret){
+            if(ret.status==1){
+                var data = ret.data.list;
+                $('#comment .list-box').html('');
+                for(var i=0;i<data.length;i++){
+                    
+                    var sku = '';
+
+                    for(var k=0;k<data[i]['sku'].length;k++){
+                        sku += '<span class="sku_item">'+data[i]['sku'][k]+'</span>';
+                    }
+                    var html_str = '';
+                        html_str = '<div class="comment-item clearfix">'+
+                                   '<div class="col-xs-2">'+
+                                   '<div class="user-item">'+
+                                   '<div class="avatar"><img src="'+data[i].user.avatar32+'" class="img-circle" /></div>'+
+                                   '<div class="nickname">'+data[i].user.nickname+'</div>'+
+                                   '</div>'+
+                                   '</div>'+
+                                   '<div class="col-xs-10">'+
+                                   '<div class="score clearfix"><div class="atar_Show"><p tip="'+data[i].score+'"></p></div><span></span></div>'+
+                                   '<div class="brief">'+data[i].brief+'</div>'+
+                                   '<div class="sku">'+sku+' <span class="create_time">'+ data[i].create_time+'</span></div>'+
+                                   '</div>'+
+                                   '</div>';
+
+                    $('#comment .list-box').append(html_str);
+                }
+                //显示分数
+                $("#comment .list-box .score p").each(function(index, element) {
+                    var num=$(this).attr("tip");
+                    var w=num*2*16;//
+                    $(this).css("width",w);
+                    $(this).parent(".atar_Show").siblings("span").text(num+"分");
+                });
+            //页码 
+            var totalCount = ret.data.totalCount;
+            
+            var totalPage = Math.ceil(totalCount/r);
+            //当前页数给dom
+            $('#comment .page-box .now_page').text(page);
+
+                
+            $('#comment .page-box .pager').html('');//清空页码
+                if(totalPage>1){
+                    //显示上一页按钮
+                    if(page>1){
+                        var next_html = '<li class="previous"><a href="javascript:;">« 上一页</a></li>';
+                        $('#comment .page-box .pager').append(next_html);
+                    }
+                    //遍历页码
+                    for(var i=1;i<=totalPage;i++){
+                        var page_html = '';
+                            if(page==i){
+                                page_html = '<li class="page_num active"><a>'+i+'</a></li>';
+                            }else{
+                                page_html = '<li class="page_num"><a href="javascript:;">'+i+'</a></li>';
+                            }
+                            
+                        $('#comment .page-box .pager').append(page_html);
+                    }
+                    //显示下一页按钮
+                    if(totalPage > page){
+                        var next_html = '<li class="next"><a href="javascript:;">下一页 »</a></li>';
+                        $('#comment .page-box .pager').append(next_html);
+                    }
+
+                    //$('#comment .page-box .pager').html(totalPage);
+                }
+            }
+        })
+
+        //点击查看其它页
+        $(document).on('click','.page-box .pager li.page_num a',function(){
+            var goPage = $(this).text();
+            ajax_get(goPage);
+        });
+        //下一页
+        $(document).on('click','.page-box .pager li.next a',function(){
+            var goPage = $('#comment .page-box .now_page').text();
+            ajax_get(goPage+1);
+        });
+        //上一页
+        $(document).on('click','.page-box .pager li.previous a',function(){
+            var goPage = $('#comment .page-box .now_page').text();
+            ajax_get(goPage-1);
+        });
+    }
+    
+
+})
