@@ -128,21 +128,20 @@ $(function(){
 $(function(){
 
     //默认加载第一页
-    ajax_get(1);
+    ajax_get(1,10);
 
     function ajax_get(page,r){
 
-        if(page=='' || page=='undefined'){
-            page = 1;
-        }
-        if(r=='' || r=='undefined'){
-            r=10;
-        }
+        page=page||1;
+        r=r||10; 
         var product_id = $('[data-toggle="product_id"]').val();
         var url = '/muushop/api/comment/page/'+page+'/r/'+r+'/product_id/'+product_id;
         $.get(url,function(ret){
             if(ret.status==1){
                 var data = ret.data.list;
+                if(data==null){
+                    data='';
+                }
                 $('#comment .list-box').html('');
                 for(var i=0;i<data.length;i++){
                     
@@ -181,8 +180,8 @@ $(function(){
             var totalPage = Math.ceil(totalCount/r);
             //当前页数给dom
             $('#comment .page-box .now_page').text(page);
-
-                
+            //测试写死总页数
+            //totalPage =30;    
             $('#comment .page-box .pager').html('');//清空页码
                 if(totalPage>1){
                     //显示上一页按钮
@@ -190,44 +189,61 @@ $(function(){
                         var next_html = '<li class="previous"><a href="javascript:;">« 上一页</a></li>';
                         $('#comment .page-box .pager').append(next_html);
                     }
+                    if(page>3){
+                        var one_html = '<li class="page_num"><a href="javascript:;">1</a></li>';
+                            one_html += '<li><a>...</a></li>';
+                         $('#comment .page-box .pager').append(one_html);
+                    }
                     //遍历页码
                     for(var i=1;i<=totalPage;i++){
                         var page_html = '';
-                            if(page==i){
-                                page_html = '<li class="page_num active"><a>'+i+'</a></li>';
-                            }else{
+                            
+                            if(page+3>i && page-3<i){
                                 page_html = '<li class="page_num"><a href="javascript:;">'+i+'</a></li>';
                             }
-                            
+
+                            if(page<3 && i<6){
+                                page_html = '<li class="page_num"><a href="javascript:;">'+i+'</a></li>';
+                            }
+                            if(i+1>totalPage){
+                                page_html = '<li><a>...</a></li>'
+                                page_html += '<li class="page_num"><a href="javascript:;">'+i+'</a></li>';
+                            }
+                            if(page==i){
+                                page_html = '<li class="page_num active"><a href="javascript:;">'+i+'</a></li>';
+                            }
                         $('#comment .page-box .pager').append(page_html);
                     }
+                   
+
                     //显示下一页按钮
                     if(totalPage > page){
                         var next_html = '<li class="next"><a href="javascript:;">下一页 »</a></li>';
                         $('#comment .page-box .pager').append(next_html);
                     }
-
-                    //$('#comment .page-box .pager').html(totalPage);
                 }
             }
-        })
-
-        //点击查看其它页
-        $(document).on('click','.page-box .pager li.page_num a',function(){
-            var goPage = $(this).text();
-            ajax_get(goPage);
-        });
-        //下一页
-        $(document).on('click','.page-box .pager li.next a',function(){
-            var goPage = $('#comment .page-box .now_page').text();
-            ajax_get(goPage+1);
-        });
-        //上一页
-        $(document).on('click','.page-box .pager li.previous a',function(){
-            var goPage = $('#comment .page-box .now_page').text();
-            ajax_get(goPage-1);
-        });
+        })  
     }
-    
-
+    //绑定事件
+    //点击数字
+    $(document).on('click','.page-box .pager li.page_num a',function(){
+        var goPage = parseInt($(this).text());
+        ajax_get(goPage);
+        return false;
+    });
+    //下一页
+    $(document).on('click','.page-box .pager li.next a',function(){
+        var goPage = parseInt($('#comment .page-box .now_page').text());
+        ajax_get(goPage+1);
+        //$('.page-box .pager li.next a').unbind('click');
+        return false;
+    });
+    //上一页
+    $(document).on('click','.page-box .pager li.previous a',function(){
+        var goPage = parseInt($('#comment .page-box .now_page').text());
+        ajax_get(goPage-1);
+        //$('.page-box .pager li.previous a').unbind('click');
+        return false;
+    });
 })
