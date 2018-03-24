@@ -181,10 +181,10 @@ class IndexController extends PublicController {
 			unset($val);
 
 			$product['ori_price'] = sprintf("%.2f",$product['ori_price']/100);
-		}else{
-			$product['price'] = sprintf("%.2f",$product['price']/100);
-			$product['ori_price'] = sprintf("%.2f",$product['ori_price']/100);
 		}
+		$product['price'] = sprintf("%.2f",$product['price']/100);
+		$product['ori_price'] = sprintf("%.2f",$product['ori_price']/100);
+
 
 		//处理商品图片
 		$product['main_pic'] = getThumbImageById($product['main_img'],800,800);

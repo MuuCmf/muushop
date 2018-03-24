@@ -35,7 +35,7 @@ class BaseController extends CommonController {
 
 		$custom_nav = S('custom_nav');
 
-		if(empty($custom_nav)){
+		if(empty($custom_nav) || $custom_nav==false){
 			$custom_nav = D('MuushopNav')->order('sort asc,id asc')->select();
 			foreach($custom_nav as &$v){
 				if(is_numeric($v['url']) || preg_match("/^\d*$/",$v['url'])){
