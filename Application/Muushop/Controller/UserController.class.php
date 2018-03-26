@@ -3,8 +3,7 @@
 namespace Muushop\Controller;
 
 use Think\Controller;
-use Com\TPWechat;
-use Com\WechatAuth;
+
 class UserController extends BaseController {
 	protected $product_model;
 	protected $cart_model;
@@ -29,12 +28,52 @@ function _initialize()
 	*/
 	public function index()
 	{
-		$su = query_user(array('avatar32', 'nickname', 'mobile'), get_uid());
-		$map['user_id'] = get_uid();
-		$map['status'] = 1;
-		$order_count_group_by_status = $this->order_model->where($map)->getfield('status,count(1) as count');
-		$this->assign('su', $su);
-		$this->assign('order_count_group_by_status', $order_count_group_by_status);
+		$option['user_id'] = _need_login();
+		$option['status'] = '1,2,3,4';//获取订单状态的数字
+		
+		$tempArr = explode(',',$option['status']);
+		$option['status']= array();
+		foreach($tempArr as $v){
+			$option['status'][] = array('eq',$v);
+		}
+		$option['status'][] = 'or';
+
+
+		list($order_list,$totalCount) = $this->order_model->get_order_list_by_page($option,$page,$order='create_time desc',$field='*',$r);
+		
+		array_walk($order_list,function(&$a)
+		{
+			empty($a['products']) ||
+			array_walk($a['products'],function(&$b)
+			{
+				$b['main_img'] = (empty($b['main_img'])?'':pic($b['main_img']));
+			});
+		});
+		unset($a);
+
+		foreach($order_list as &$val){
+			$val['paid_fee'] = sprintf("%01.2f", $val['paid_fee']/100);//将金额单位分转成元
+			foreach($val['products'] as &$products){
+				$products['temporary'] = explode(';',$products['sku_id']);
+				
+				if(empty($products['temporary'][1])){
+					unset($products['temporary'][1]);
+				}
+
+				$products['id'] = $products['temporary'][0];
+				unset($products['temporary'][0]);//删除临时sku_id数组的ID
+				$products['temporary'] = array_values($products['temporary']);
+				
+				if(!empty($products['temporary'])){//数组不为空时写sku
+					$products['sku'] =(empty($products['temporary'])?'':$products['temporary']);
+				}
+				unset($products['temporary']);//删除临时sku_id数组
+			}
+			unset($products);
+		};
+		unset($val);
+		
+		$this->assign('order_list',$order_list);
 		$this->display();
 	}
 
@@ -50,6 +89,7 @@ function _initialize()
 				$option['page'] = $page;
 				$option['r'] = 20;
 				$option['user_id'] = $this->user_id;
+				$option['status'] = I('get.status',0,'intval');//获取订单状态的数字
 				$order_list = $this->order_model->get_order_list($option);
 				$order_list['list'] = empty($order_list['list'])?array(): $order_list['list'];
 				array_walk($order_list['list'],function(&$a)

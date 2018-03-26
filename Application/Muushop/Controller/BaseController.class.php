@@ -34,9 +34,8 @@ class BaseController extends CommonController {
 	private function custom_nav(){
 
 		$custom_nav = S('custom_nav');
-
-		if(empty($custom_nav) || $custom_nav==false){
-			$custom_nav = D('MuushopNav')->order('sort asc,id asc')->select();
+		if($custom_nav===false || $custom_nav==''){
+			$custom_nav = D('MuushopNav')->cache('custom_nav')->order('sort asc,id asc')->select();
 			foreach($custom_nav as &$v){
 				if(is_numeric($v['url']) || preg_match("/^\d*$/",$v['url'])){
 					$v['url'] = U('Muushop/index/cats',array('id'=>$v['url']));
@@ -54,7 +53,6 @@ class BaseController extends CommonController {
 			unset($v);
 			$custom_nav = S('custom_nav',$custom_nav,3600);
 		}
-
 		return $custom_nav;
 	}
 	/**
@@ -68,12 +66,5 @@ class BaseController extends CommonController {
 			$this->error('需要登录');
 		}
 
-	}
-	/**
-	 * [uid description]
-	 * @return [type] [description]
-	 */
-	public function uid(){
-		return is_login();
 	}
 }

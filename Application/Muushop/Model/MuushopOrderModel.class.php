@@ -74,6 +74,16 @@ class MuushopOrderModel extends Model {
 		return $ret;
 	}
 
+	/*
+	 * 获取订单列表2
+	 */
+	public function get_order_list_by_page($map,$page=1,$order='create_time desc',$field='*',$r=20)
+	{
+		$list  = $this->where($map)->order($order)->page($page, $r)->field($field)->select();
+		$totalCount = $this->where($map)->count();
+		return array($list,$totalCount);
+	}
+
 
 	/*
 	 * 获取订单

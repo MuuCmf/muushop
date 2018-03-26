@@ -4,18 +4,117 @@
 </block>
 <block name="body">
 <div id="main-container" class="container">
-	<div class="col-xs-2">
+	<div class="col-md-2">
 		<!--用户中心导航-->
 		<include file="User/_nav"/>
 	</div>
 
-	<div class="col-xs-10">
-		<div class="common_box">
-			<h3>用户中心</h3>
-		</div>
+	<div class="col-md-10">
 
+		<div class="orders-num-content clearfix">
+			<div class="col-xs-3">
+	    		<div class="orders-num-box status-1" data-status="1">
+		    		<h3 class="text-center">待付款</h3>
+		    		<p class="text-center" data-toggle="num">0</p>
+	    		</div>
+	    	</div>
+	    				<div class="col-xs-3">
+	    		<div class="orders-num-box status-2" data-status="2">
+		    		<h3 class="text-center">待发货</h3>
+		    		<p class="text-center" data-toggle="num">0</p>
+	    		</div>
+	    	</div>
+	    				<div class="col-xs-3">
+	    		<div class="orders-num-box status-3" data-status="3">
+		    		<h3 class="text-center">待收货</h3>
+		    		<p class="text-center" data-toggle="num">0</p>
+	    		</div>
+	    	</div>
+	    				<div class="col-xs-3">
+	    		<div class="orders-num-box status-4" data-status="4">
+		    		<h3 class="text-center">待评价</h3>
+		    		<p class="text-center" data-toggle="num">0</p>
+	    		</div>
+	    	</div>
+		</div>
+		<div class="margin-top-10">
+			<h3>我的订单</h3>
+			<div class="index-orders_list">
+				<div class="order-item clearfix">
+					
+					<div class="col-xs-9">
+						<div class="goods-box clearfix">
+			                <div class="goods-item">
+			                    <div class="p-img">
+			                        <a href="/index.php?s=/muushop/index/product/id/12.html" target="_blank">
+			                        <img src="/Uploads/Picture/2018-01-29/5a6ec2b46a813.jpg" width="60" height="60">
+			                        </a>
+			                    </div>
+			                    <div class="p-msg">
+			                        <div class="p-name">
+			                        	<a href="/index.php?s=/muushop/index/product/id/12.html" target="_blank">官方正版 神犬小七 短袖T恤 情侣款</a>
+			                        </div>
+			                        <div class="sku_box">
+		                        		<span class="sku_li_span">尺码:M</span><span class="sku_li_span">颜色:白色</span>
+		                        	</div>
+			                        <div class="goods-number">x1</div>
+			                    </div>
+			                </div>
+			        	</div>
+					</div>
+					<div class="col-md-3">
+						<div class="row">
+							<div class="col-md-6">
+								<div class="amount">
+				                	<span>¥159.00</span>
+				                </div>
+				                <div class="pay">
+				                	<span>在线支付</span>
+				                </div>
+							</div>
+
+							<div class="col-md-6">
+								<div class="operate">
+				                	<a>已评价</a>
+				                </div>
+							</div>
+						</div>
+					</div>
+				</div>
+
+			</div>
+			
+		</div>
 		<div class="common_box margin-top-10 clearfix">
+			<h3>推荐购买</h3>
 		</div>
 	</div>
 </div>
+</block>
+<block name="script">
+<script>
+$(function(){
+	/**
+	 * 获取订单数量
+	 */
+	order_status(1,'.status-1');//代付款
+	order_status(2,'.status-2');//代发货
+	order_status(3,'.status-3');//代收货
+	order_status(4,'.status-4');//代评价
+
+	function order_status(status,ele){
+		
+		var url = 'Muushop/api/orders/status/'+status;
+		$.get(url,function (ret) {
+	          if(ret.status==1){
+	              $(ele).find('[data-toggle="num"]').text(ret.data.totalCount);
+	          }
+	      })
+	}
+	
+});
+$(function(){
+
+})
+</script>
 </block>

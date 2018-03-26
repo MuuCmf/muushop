@@ -28,7 +28,15 @@ class ApiController extends Controller {
 		$this->product_comment_model = D('Muushop/MuushopProductComment');
 	}
 
-	
+	protected function init_user(){
+		if(_need_login()){
+			return get_uid();
+		}else{
+			$result['status']=0;
+			$result['info'] = '取消失败';
+			$this->ajaxReturn($result,'JSON');
+		}
+	}
 	/**
 	 * 计算运费json接口
 	 * @param int $id 运费模板ID
@@ -71,6 +79,7 @@ class ApiController extends Controller {
 	 * 
 	 */
 	public function address(){
+		$this->init_user();
 		$map['user_id'] = is_login();
 		list($list,$totalCount) = $this->user_address_model->get_user_address_list($map);
 		$first = 0;
@@ -172,6 +181,71 @@ class ApiController extends Controller {
 		}else{
 			$result['status']=0;
 			$result['info'] = '提交方式错误或未登陆';
+		}
+		$this->ajaxReturn($result,'JSON');
+	}
+	/**
+	 * 订单数据
+	 * 参数 如：status=1;status=1,2,3,4查询不同状态订单
+	 * @return [type] [description]
+	 */
+	public function orders(){
+		$this->init_user();
+		$page = I('get.page',1,'intval');
+		$r = 20;
+		$option['user_id'] = _need_login();
+		$option['status'] = I('get.status','0','text');//获取订单状态的数字
+		if(is_numeric($option['status'])){
+			$option['status'] = $option['status'];
+		}else{
+			$tempArr = explode(',',$option['status']);
+			$option['status']= array();
+			foreach($tempArr as $v){
+				$option['status'][] = array('eq',$v);
+			}
+			$option['status'][] = 'or';
+		}
+
+		list($order_list,$totalCount) = $this->order_model->get_order_list_by_page($option,$page,$order='create_time desc',$field='*',$r);
+		$order_list = empty($order_list)?array(): $order_list;
+		array_walk($order_list,function(&$a)
+		{
+			empty($a['products']) ||
+			array_walk($a['products'],function(&$b)
+			{
+				$b['main_img'] = (empty($b['main_img'])?'':pic($b['main_img']));
+			});
+		});
+		unset($a);
+
+		foreach($order_list as &$val){
+			$val['paid_fee'] = sprintf("%01.2f", $val['paid_fee']/100);//将金额单位分转成元
+			foreach($val['products'] as &$products){
+				$products['temporary'] = explode(';',$products['sku_id']);
+				
+				if(empty($products['temporary'][1])){
+					unset($products['temporary'][1]);
+				}
+
+				$products['id'] = $products['temporary'][0];
+				unset($products['temporary'][0]);//删除临时sku_id数组的ID
+				$products['temporary'] = array_values($products['temporary']);
+				
+				if(!empty($products['temporary'])){//数组不为空时写sku
+					$products['sku'] =(empty($products['temporary'])?'':$products['temporary']);
+				}
+				unset($products['temporary']);//删除临时sku_id数组
+			}
+			unset($products);
+		};
+		unset($val);
+		if($order_list){
+			$result['status']=1;
+			$result['info'] = 'success';
+			$result['data'] = array('list'=>$order_list,'totalCount'=>$totalCount);
+		}else{
+			$result['status']=0;
+			$result['info'] = 'error';
 		}
 		$this->ajaxReturn($result,'JSON');
 	}

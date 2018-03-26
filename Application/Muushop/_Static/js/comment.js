@@ -46,7 +46,6 @@ $(function(){
               toast.error(ret.info, '温馨提示');
           }
       })
-      console.log(comment_json);
   })
 });
 

@@ -1,6 +1,76 @@
 .side-menu {
     background: white;
 }
+/*用户中心首页*/
+
+.orders-num-content {
+
+    margin:0 -10px;
+
+    .orders-num-box {
+        background:#EEE;
+        margin:0 auto;
+        padding:1px;
+        color:#fff;
+    }
+    .status-1 {
+        background:#03B8CF;
+    }
+    .status-2 {
+        background:#8666B8;
+    }
+    .status-3 {
+        background:#F1A325;
+    }
+    .status-4 {
+        background:#EA644A;
+    }
+}
+
+
+.index-orders_list {
+
+    .order-item {
+        background:#fff;
+        padding:5px;
+
+        .goods-box {
+
+            .goods-item {
+
+                .p-img {
+                    float:left;
+                    width:60px;
+                    height:60px;
+                }
+                .p-msg {
+                    padding-left:10px;
+                    margin-left:60px;
+
+                    .p-name {
+                        margin-bottom:5px;
+                    }
+
+                    .sku_box {
+    
+                        .sku_li_span {
+                            border:1px solid #ddd;
+                            background:#f6f6f6;
+                            border-radius:2px;
+                            font-size:12px;
+                            padding:5px;
+                            margin-right:5px;
+                        }
+                    }
+                }
+            }
+        }
+
+        .operate {
+            text-align:center;
+        }
+    }
+}
 
 /*我的优惠券*/
 .coupon-list-box {
