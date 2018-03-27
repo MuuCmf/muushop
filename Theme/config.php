@@ -14,8 +14,7 @@ if($now_theme!='default'){
             '__THEME_CSS__'=>__ROOT__.'/Theme/'.$now_theme.'/'.MODULE_NAME.'/Static/css',
             '__THEME_JS__'=>__ROOT__.'/Theme/'.$now_theme.'/'.MODULE_NAME.'/Static/js',
             '__THEME_IMG__'=>__ROOT__.'/Theme/'.$now_theme.'/'.MODULE_NAME.'/Static/images',
-            '__THEME_VIEW__'=>__ROOT__.'/Theme/'.$now_theme.'/'.MODULE_NAME.'/View',
-            '__THEME_VIEW_PUBLIC__'=>__ROOT__.'/Theme/'.$now_theme.'/'.MODULE_NAME.'/View/Public',
+            '__THEME_LIB__'=>__ROOT__.'/Theme/'.$now_theme.'/'.MODULE_NAME.'/Static/lib',
             '__THEME_PUBLIC__'=>__ROOT__.'/Theme/'.$now_theme.'/Public',
         ),
     );
