@@ -37,6 +37,21 @@ class ApiController extends Controller {
 			$this->ajaxReturn($result,'JSON');
 		}
 	}
+	public function result_url(){
+		//根据支付方式判断回调地址
+		$callback = modC('MUUSHOP_PAY_CALLBACK','','Muushop');
+		$result_url=urlencode($callback);//支付成功后跳转回的地址
+		//组装JSON返回数据
+		if(isset($result_url)){
+			$result['status']=1;
+			$result['info'] = 'success';
+			$result['data'] = $result_url;
+		}else{
+			$result['status']=0;
+			$result['info'] = 'error';
+		}
+		$this->ajaxReturn($result,'JSON');
+	}
 	/**
 	 * 计算运费json接口
 	 * @param int $id 运费模板ID
@@ -249,6 +264,7 @@ class ApiController extends Controller {
 		}
 		$this->ajaxReturn($result,'JSON');
 	}
+
 
 	/**
 	 * 订单评论

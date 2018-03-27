@@ -39,49 +39,8 @@
 		</div>
 		<div class="margin-top-10">
 			<h3>我的订单</h3>
-			<div class="index-orders_list">
-				<div class="order-item clearfix">
-					
-					<div class="col-xs-9">
-						<div class="goods-box clearfix">
-			                <div class="goods-item">
-			                    <div class="p-img">
-			                        <a href="/index.php?s=/muushop/index/product/id/12.html" target="_blank">
-			                        <img src="/Uploads/Picture/2018-01-29/5a6ec2b46a813.jpg" width="60" height="60">
-			                        </a>
-			                    </div>
-			                    <div class="p-msg">
-			                        <div class="p-name">
-			                        	<a href="/index.php?s=/muushop/index/product/id/12.html" target="_blank">官方正版 神犬小七 短袖T恤 情侣款</a>
-			                        </div>
-			                        <div class="sku_box">
-		                        		<span class="sku_li_span">尺码:M</span><span class="sku_li_span">颜色:白色</span>
-		                        	</div>
-			                        <div class="goods-number">x1</div>
-			                    </div>
-			                </div>
-			        	</div>
-					</div>
-					<div class="col-md-3">
-						<div class="row">
-							<div class="col-md-6">
-								<div class="amount">
-				                	<span>¥159.00</span>
-				                </div>
-				                <div class="pay">
-				                	<span>在线支付</span>
-				                </div>
-							</div>
-
-							<div class="col-md-6">
-								<div class="operate">
-				                	<a>已评价</a>
-				                </div>
-							</div>
-						</div>
-					</div>
-				</div>
-
+			<div class="index-orders-list">
+				<span class="onlonder"><i class="icon icon-spin icon-spinner-snake"></i> 加载中...</span>
 			</div>
 			
 		</div>
@@ -113,8 +72,144 @@ $(function(){
 	}
 	
 });
+
 $(function(){
 
-})
+	//支付回调地址
+	var result_url;//初始化回调地址
+	$.get('Muushop/api/result_url',function(ret){
+		if(ret.status==1){
+			result_url = encodeURI(ret.data);
+		}else{
+			result_url =  _ROOT_ + '/Muushop/user/orders';
+		}
+		
+	})
+
+	var status = '1,2,3,4';
+	var url = 'Muushop/api/orders/status/'+status;
+	$.get(url,function(ret){
+		if(ret.status==1){
+			//清除元素内HTML
+			$('.index-orders-list').empty();
+            //遍历数组
+        	$.each(ret.data.list,function(n,value) { 
+
+        		//获取支付方式
+        		var pay_type = '';
+				switch(value.pay_type)
+				{
+				case 'onlinepay':
+				  pay_type = '在线支付';
+				  break;
+				case 'balance':
+				  pay_type = '余额支付';
+				  break;
+				case 'delivery':
+				  pay_type = '货到付款';
+				  break;
+				}
+				//组装html代码
+		  		var html_str = '';
+              	html_str += '<div class="order-item clearfix">';
+              	html_str += '<div class="col-xs-9">'+
+						    '<div class="goods-box clearfix">';
+			    //遍历订单商品
+				var html_products = '';
+				$.each(value.products,function(n,products) {
+					html_products += '<div class="goods-item clearfix">';
+			    		html_products += '<div class="p-img">'+
+			                  				'<a href="/index.php?s=/muushop/index/product/id/'+products.sku_id+'.html" target="_blank">'+
+			                  				'<img src="'+products.main_img+'" width="60" height="60">'+
+			                  				'</a>'+
+			                  			 '</div>';
+
+			        	html_products += '<div class="p-msg">'+
+			        					 '<div class="p-name">'+
+				                  			'<a href="/index.php?s=/muushop/index/product/id/12.html" target="_blank">'+products.title+'</a>'+
+				                    	 '</div>';
+
+				    	html_products += '<div class="sku_box">';
+				    	//遍历商品sku
+				    	var html_sku = '';
+				    	if(products.sku){
+				    		$.each(products.sku,function(m,sku){
+					    		html_sku += '<span class="sku_li_span">'+products.sku[m]+'</span>';
+					    	})
+				    	}
+				    	
+			            html_products += html_sku;
+			            html_products += '</div>';
+
+				        html_products += '<div class="goods-number">x'+products.quantity+'</div>';
+			    		html_products += '</div>';
+			    	html_products += '</div>';
+				});
+
+				html_str += html_products;
+			    
+			    html_str += '</div></div>';
+
+
+			    html_str += '<div class="col-xs-3">'+
+							  '<div class="row">';
+				html_str += '<div class="col-md-6">';
+					html_str += '<div class="amount">'+
+					                '<span>¥'+ value.paid_fee+'</span>'+
+					              '</div>';
+
+					
+					html_str += '<div class=paytype>'+
+					                '<span>'+pay_type+'</span>'+
+					             '</div>';
+				html_str += '</div>';
+				html_str += '<div class="col-md-6">'+
+								'<div class="operate">';
+
+				//操作区html判断
+				var operate_html='';//初始化变量
+				switch(value.status){
+					case '1':
+					var param = ['order_no',value.order_no,'result_url', result_url];	
+					var pay_url = U('Muushop/pay/charge',param);
+					operate_html = '<a href="'+pay_url+'" class="btn btn-success btn-block" data-toggle="pay_order">立即支付</a>'+
+						    	   '<a class="btn btn-warning btn-block" data-toggle="cannel_order" data-id="'+value.id+'">取消订单</a>';
+					break;
+					case '2':
+					if(value.pay_type=='delivery'){
+						operate_html = '<a class="btn btn-warning btn-block" data-toggle="cannel_order" data-id="{$order.id}">取消订单</a>';
+					}
+					operate_html += '<a>配货中</a>';
+					break;
+					case '3':
+					var url = U("Muushop/User/orders",["action","delivery_info","id",value.id]);
+					operate_html = '<a target="_blank" class="btn btn-danger btn-block" data-toggle="do_receipt" data-id={$order.id}>确认收货</a>'+
+						    	   '<a class="btn btn-block" data-remote="'+url+'" data-toggle="modal">查看物流</a>';
+					break;
+					case '4':
+					var url = U('Muushop/User/comment',['id',value.id]);
+					operate_html = '<a class="btn  btn-info btn-block" href="'+url+'">评价</a>';
+					break;
+					default:
+					operate_html = '';
+				}
+				    
+
+
+				    html_str += operate_html;
+				    html_str += '</div>'+
+							'</div>';
+
+				html_str += '</div></div></div>';
+				html_str += '</div>';
+
+
+				$('.index-orders-list').append(html_str);
+				//console.log(html_str);
+		  	})
+		}
+              
+    })
+});
 </script>
 </block>
