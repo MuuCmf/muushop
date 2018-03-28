@@ -28,52 +28,7 @@ function _initialize()
 	*/
 	public function index()
 	{
-		$option['user_id'] = _need_login();
-		$option['status'] = '1,2,3,4';//获取订单状态的数字
-		
-		$tempArr = explode(',',$option['status']);
-		$option['status']= array();
-		foreach($tempArr as $v){
-			$option['status'][] = array('eq',$v);
-		}
-		$option['status'][] = 'or';
 
-
-		list($order_list,$totalCount) = $this->order_model->get_order_list_by_page($option,$page,$order='create_time desc',$field='*',$r);
-		
-		array_walk($order_list,function(&$a)
-		{
-			empty($a['products']) ||
-			array_walk($a['products'],function(&$b)
-			{
-				$b['main_img'] = (empty($b['main_img'])?'':pic($b['main_img']));
-			});
-		});
-		unset($a);
-
-		foreach($order_list as &$val){
-			$val['paid_fee'] = sprintf("%01.2f", $val['paid_fee']/100);//将金额单位分转成元
-			foreach($val['products'] as &$products){
-				$products['temporary'] = explode(';',$products['sku_id']);
-				
-				if(empty($products['temporary'][1])){
-					unset($products['temporary'][1]);
-				}
-
-				$products['id'] = $products['temporary'][0];
-				unset($products['temporary'][0]);//删除临时sku_id数组的ID
-				$products['temporary'] = array_values($products['temporary']);
-				
-				if(!empty($products['temporary'])){//数组不为空时写sku
-					$products['sku'] =(empty($products['temporary'])?'':$products['temporary']);
-				}
-				unset($products['temporary']);//删除临时sku_id数组
-			}
-			unset($products);
-		};
-		unset($val);
-		
-		$this->assign('order_list',$order_list);
 		$this->display();
 	}
 

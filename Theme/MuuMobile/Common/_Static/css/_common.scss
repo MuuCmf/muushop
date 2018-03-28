@@ -19,46 +19,35 @@ body {
 html,body{
   height: 100%
 }
-.wrap{
-    width: 100%;
-    height: 100%;
-}
 .header,.footer{
-  height:60px;
-  line-height:60px;
-  background-color:#D8D8D8;
+  height:48px;
+  line-height:48px;
+  background-color:#fff;
+  position:fixed;
+  display:block;
+  width:100%;
+  z-index:99999;
+}
+.header {
+  left:0;
+  top:0;
+
+  .content {
+
+  }
+}
+.footer {
+  left:0;
+  bottom:0;
 }
 .main{
   overflow:auto;
-  -webkit-overflow-scrolling: touch;
-}
-.flex{
-  display:-webkit-box;
-  display:-webkit-flex;
-  display:-ms-flexbox;
-  display:flex;
-}
-.flex-v{
-  -webkit-box-orient:vertical;
-  -webkit-flex-direction:column;
-  -ms-flex-direction:column;
-  flex-direction:column;
 }
 .flex-body{
-  -webkit-box-flex:1;
-  -webkit-flex:1;
-  -ms-flex:1;
-  flex:1;
+  overflow:hidden;
+  padding:48px 0;
 }
-a {
-  color:#333;
-  text-decoration: none;
-    &:hover {
-      text-decoration: none;
-      cursor: pointer !important;
-    }
 
-}
 .adv-wrap {
   position: relative;
   overflow: visible;

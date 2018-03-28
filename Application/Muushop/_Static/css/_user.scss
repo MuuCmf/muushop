@@ -1,5 +1,6 @@
 .side-menu {
     background: white;
+    margin-bottom:10px;
 }
 /*用户中心首页*/
 
@@ -39,6 +40,14 @@
         line-height:200px;
         margin-bottom:10px;
     }
+    .empty {
+        display:block;
+        background:#fff;
+        text-align:center;
+        font-size:24px;
+        line-height:200px;
+        margin-bottom:10px;
+    }
     .order-item {
         display:block;
         background:#fff;
@@ -52,12 +61,19 @@
 
                 .p-img {
                     float:left;
-                    width:60px;
-                    height:60px;
+                    width:80px;
+                    height:80px;
+                    border:1px solid #eee;
+                    overflow:hidden;
+
+                    img {
+                        width:80px;
+                        height:80px;
+                    }
                 }
                 .p-msg {
                     padding-left:10px;
-                    margin-left:60px;
+                    margin-left:80px;
 
                     .p-name {
                         margin-bottom:5px;
@@ -68,11 +84,15 @@
                         .sku_li_span {
                             border:1px solid #ddd;
                             background:#f6f6f6;
+                            color:#666;
                             border-radius:2px;
                             font-size:12px;
                             padding:5px;
                             margin-right:5px;
                         }
+                    }
+                    .goods-number {
+                        margin-top:5px;
                     }
                 }
             }
@@ -80,7 +100,7 @@
         .amount {
 
             span {
-                font-size:16px;
+                font-size:14px;
                 font-weight:600;
                 color:#f60;
             }
@@ -89,8 +109,10 @@
             text-align:center;
 
             a {
-                display:block;
-                line-height:24px;
+                display:block;  
+            }
+            p {
+                color:#666;
             }
         }
     }

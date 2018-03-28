@@ -578,7 +578,6 @@ str;
 				
 				$count = I('count');
 				if(empty($option['cat_id'])) unset($option['cat_id']);
-				//$product = $this->product_model->get_product_list($option);
 				list($product,$totalCount) = $this->product_model->getListByPage($option,$page,'create_time desc');
 				foreach($product as &$val){
 					$val['price']='￥'.sprintf("%.2f",$val['price']/100);
