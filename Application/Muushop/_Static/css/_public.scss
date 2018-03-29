@@ -3,6 +3,10 @@ body {
 }
 .main-wrapper {
     padding-top: 60px;
+
+    #main-container {
+    	margin-top:0;
+    }
 }
 .container {
 	padding-left:0;
@@ -21,7 +25,7 @@ body {
 	}
 }
 .navbar-muushop {
-
+	height:50px;
 	box-shadow: 0 0 5px rgba(0, 0, 0, 0.19);
     background-color: #fff;
 
@@ -50,5 +54,45 @@ body {
 		    }
 		}
 	}
+
+	@media screen and (max-width:768px){
+		.navbar-header {
+			text-align:center;
+
+			.brand {
+
+				.logo {
+					width:128px;
+				}
+			}
+		}
+		.collapse {
+			position:fixed;
+		    display: block;
+		    background:#fff;
+		    left:0;
+		    bottom:0;
+
+		    	ul {
+			    list-style: none;
+			    padding: 0;
+			    margin: 0;
+
+			    li {
+			    	position: relative;
+			    	float: left;
+					line-height:50px;
+				}
+				li > a {
+				    display: block;
+
+				    &:hover {
+				    	color:#f60;
+				    }
+				}
+			}
+		}
+	}
 }
+
 

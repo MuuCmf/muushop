@@ -69,10 +69,12 @@ $(function(){
 					break;
 					case '2':
 					var status = '待发货';
+
 					if(value.pay_type=='delivery'){
-						operate_html = '<a class="btn btn-warning btn-block" data-toggle="cannel_order" data-id="'+value.id+'">取消订单</a>';
+						operate_html += '<a class="btn btn-warning btn-block" data-toggle="cannel_order" data-id="'+value.id+'">取消订单</a>';
 					}
-					operate_html += '<p>配货中</p>';
+					var url = U("Muushop/User/orders",["action","delivery_info","id",value.id]);
+					operate_html += '<a class="btn btn-block" data-remote="'+url+'" data-toggle="modal">查看物流</a>';
 					break;
 					case '3':
 					var status = '已发货';
@@ -91,7 +93,8 @@ $(function(){
 				//组装html代码
 		  		var html_str = '';
               	html_str += '<div class="order-item clearfix">';
-              	html_str += '<div class="col-xs-9">'+
+              	html_str += '<div class="order-base-info clearfix"><span class="pull-left">订单号：'+value.order_no+'</span><span class="order-status pull-right">'+status+'</span></div>';
+              	html_str += '<div class="col-md-9">'+
 						    '<div class="goods-box clearfix">';
 			    //遍历订单商品
 				var html_products = '';
@@ -130,22 +133,19 @@ $(function(){
 			    html_str += '</div></div>';
 
 
-			    html_str += '<div class="col-xs-3">'+
+			    html_str += '<div class="col-md-3">'+
 							  '<div class="row">';
-				html_str += '<div class="col-md-6">';
+				html_str += '<div class="col-md-6 col-xs-12">';
 					html_str += '<div class="amount text-center">'+
-					                '<span>¥'+ value.paid_fee+'</span>'+
+					                '合计：<span>¥'+ value.paid_fee+'</span>'+
 					              '</div>';
 
 					
 					html_str += '<div class="paytype text-center">'+
 					                '<span>'+pay_type+'</span>'+
 					             '</div>';
-					html_str += '<div class="status text-center">'+
-					                '<span>'+ status+'</span>'+
-					             '</div>';
 				html_str += '</div>';
-				html_str += '<div class="col-md-6">'+
+				html_str += '<div class="col-md-6 col-xs-12">'+
 								'<div class="operate">';
 
 				    html_str += operate_html;

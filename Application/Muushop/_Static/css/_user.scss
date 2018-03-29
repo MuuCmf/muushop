@@ -67,6 +67,19 @@
             transform: translate3d(0, -2px, 0);
         }
 
+        .order-base-info {
+            padding:5px;
+            background:#f5f5f5;
+            color:#aaa;
+            line-height:24px;
+
+            .order-status {
+                color:#f60;
+                font-size:14px;
+                padding:0 10px;
+            }
+        }
+
         .goods-box {
 
             .goods-item {
@@ -111,7 +124,6 @@
             }
         }
         .amount {
-
             span {
                 font-size:14px;
                 font-weight:600;
@@ -119,6 +131,7 @@
             }
         }
         .operate {
+            padding:5px 0 5px 0;
             text-align:center;
 
             a {
@@ -126,6 +139,20 @@
             }
             p {
                 color:#666;
+            }
+        }
+        @media screen and (max-width:768px) {
+            .amount {
+                display:inline-block;
+                span {
+                    padding:0 5px;
+                }
+            }
+            .paytype {
+                display:inline-block;
+                span {
+                    padding:0 5px;
+                }
             }
         }
     }
@@ -203,6 +230,7 @@
     margin-right: 10px;
 }
 /*我的地址end*/
+
 /*我的订单*/
 table {
     display: table;
@@ -244,6 +272,7 @@ tbody td {
 a.ftx-03, a.ftx03, div.ftx-03, div.ftx03, span.ftx-03, span.ftx03 {
     color: #aaa;
 }
+
 /*订单*/
 .order-tb .ordertime-cont {
     position: relative;

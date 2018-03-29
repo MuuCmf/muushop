@@ -39,22 +39,12 @@ class IndexController extends PublicController {
 		}
 		unset($v);
 		$items = list_to_tree($items,$pk = 'id', 'parent_id', $child = 'items');
-		
 		$this->assign('cats',$items);
 	}
 
-	public function index($page = 1, $r = 20)
+	public function index()
 	{
-
-		$map['status']=1;
-        /* 获取当前分类下列表 */
-        list($list,$totalCount) = $this->product_model->getListByPage($map,$page,'id desc,create_time desc','*',$r);
-
-		//dump($menu);exit;
-		$this->assign('list', $list);
-        $this->assign('totalCount',$totalCount);
 		$this->display();
-
 	}
 
 	public function cats()
@@ -211,44 +201,4 @@ class IndexController extends PublicController {
 		$this->display();
 	}
 
-	public function preview_delivery()
-	{
-
-//		var_dump(__file__.' line:'.__line__,$_REQUEST);exit;
-		$address = array(
-			'province' => I('province', '','text'),
-			'city'     => I('city', '','text'),
-			'town'     => I('town', '','text'),
-		);
-
-		$products = I('products','');
-		if(empty($products))
-		{
-			$products = array(
-				array(
-					'id'   => I('id','','intval'), //商品id
-					'count' => I('quantity', 1,'intval'), //商品数目
-				));
-		}
-		else
-		{
-			is_array($products) || $this->error();
-			foreach ($products as $k => &$p)
-			{
-				($p['id'] = I('data.id','','intval',$p)) || $this->error(1);
-				($p['quantity'] = I('data.quantity','','intval',$p)) || $this->error(2);
-				$products[$k]['count'] = $products[$k]['quantity'];
-			}
-		}
-		$ret = $this->order_logic->precalc_delivery($products, $address);
-		if($ret)
-		{
-			$this->success($ret);
-		}
-		else
-		{
-			$this->error();
-		}
-
-	}
 }

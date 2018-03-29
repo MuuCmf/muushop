@@ -14,17 +14,22 @@
         <div class="pic">
             {:W('Common/Adv/render',array(array('name'=>'slider','type'=>2,'width'=>'100%','height'=>'auto','margin'=>'0 0 15px 0','title'=>'首页轮播图','data'=>array('style'=>1))))}
         </div>
+    </div>
 
-        <div class="index_top_position">
-            <div class="container">
-                <div class="muushop_cats_box">
-                    <!--
-                    <include file="Public/_index_cats"/>
-                -->
+    <section class="category-section">
+        <div class="container">
+            <div class="index-category-box">
+            <volist name="cats" id="cats"> 
+                <div class="item">
+                    <img src="{$cats.image|getThumbImageById=80,80}" />
+                    <h4>
+                        <a href="{:U('Muushop/index/cats',array('id'=>$cats['id']))}">{$cats.title}</a>
+                    </h4>
                 </div>
+            </volist>
             </div>
         </div>
-    </div>
+    </section>
     <div class="promo-area">
         <div class="zigzag-bottom"></div>
         <div class="container">
