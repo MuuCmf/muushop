@@ -16,64 +16,120 @@ $zMessage: 5050;
 
     .navbar-header {
         
+        .navbar-toggle {
+
+            i {
+                color:#fff;
+            }
+        }
         a.brand {
             line-height:83px;
         }
     }
 
-    ul {
-        list-style: none;
-        padding: 0;
-        margin: 0;
+    .navbar-collapse {
 
+        ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+
+            li {
+                position: relative;
+                float: left;
+                line-height:83px;
+
+                a {
+                    display: block;
+                    height: 100%;
+                    padding-left: 14px;
+                    padding-right: 14px;
+                    font-size: 15px;
+                    color: #fff;
+                    font-weight: normal;
+                    text-decoration: none;
+
+                    &:hover {
+                        color:#f60;
+                    }
+                }
+
+                ul.dropdown-menu {
+                    background: #f6f6f6;
+
+                    li > a {
+                        border-bottom: solid 1px #fff;
+                        color:#333;
+                    }
+                }
+            
+            }  
+        }
+    }
+    .navbar-icon {
         li {
-            position: relative;
-            float: left;
-            line-height:83px;
-
+            line-height:83px!important;
             a {
-                display: block;
-                height: 100%;
-                padding-left: 14px;
-                padding-right: 14px;
-                font-size: 15px;
-                color: #fff;
-                font-weight: normal;
-                text-decoration: none;
-
-                &:hover {
-                    color:#f60;
-                }
+                color:#fff;
             }
+        }
+    }
 
-            ul.dropdown-menu {
-                background: #f6f6f6;
+}
+@media screen and (max-width:768px){
+    .navbar-muushop {
+        height:50px;
 
-                li > a {
-                    border-bottom: solid 1px #fff;
-                    color:#333;
-                }
+        a.brand {
+            line-height:1!important;
+        }
+
+        .navbar-collapse {
+            background:#fff;
+
+            ul {
+                li {
+                    position: relative;
+                    line-height:32px;
+                    float:none;
+
+                    a {
+                        color: #666;
+                        &:hover {
+                            color:#f60;
+                        }
+                    }
+                }  
             }
-        
-        }  
-    }  
+        }
+        .navbar-icon {
+            li {
+                line-height:50px!important;
+            }
+        }
+    }
 }
 .white-nav {
     height:50px;
     background-color:rgba(255,255,255,1);
 
+    .navbar-toggle {
+        i {
+            color:#000!important;
+        }
+    }
     a.brand {
-        line-height:50px!important;;
+        line-height:1!important;
     }
 
     li {
         position: relative;
         float: left;
-        line-height:50px!important;;
+        line-height:50px!important;
     }
 
     li > a{
-          color:#333!important;
+          color:#666!important;
           font-weight: normal;
           text-decoration: none;
 
@@ -87,6 +143,26 @@ $zMessage: 5050;
             li > a {
                 border-bottom: solid 1px #fff;
                 color:#333;
+            }
+        }
+    }
+    .navbar-icon {
+        li {
+            line-height:50px!important;
+        }
+    }
+}
+@media screen and (max-width:768px){
+    .white-nav {
+        li {
+            position: relative;
+            float: left;
+            line-height:32px!important;
+        }
+
+        .navbar-icon {
+            li {
+                line-height:50px!important;
             }
         }
     }
@@ -153,6 +229,18 @@ $zMessage: 5050;
         font-weight: 200;
         padding: 20px 10px;
         text-align: center;
+    }
+}
+@media screen and (max-width:768px) {
+    .promo-area {
+        padding: 20px 0 10px;
+        .col-xs-6 {
+            padding:0;
+
+            .single-promo {
+                min-height:130px;
+            }
+        }
     }
 }
 

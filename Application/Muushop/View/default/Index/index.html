@@ -16,43 +16,30 @@
         </div>
     </div>
 
-    <section class="category-section">
-        <div class="container">
-            <div class="index-category-box">
-            <volist name="cats" id="cats"> 
-                <div class="item">
-                    <img src="{$cats.image|getThumbImageById=80,80}" />
-                    <h4>
-                        <a href="{:U('Muushop/index/cats',array('id'=>$cats['id']))}">{$cats.title}</a>
-                    </h4>
-                </div>
-            </volist>
-            </div>
-        </div>
-    </section>
+
     <div class="promo-area">
         <div class="zigzag-bottom"></div>
         <div class="container">
             <div class="row">
-                <div class="col-md-3 col-sm-6">
+                <div class="col-md-3 col-xs-6">
                     <div class="single-promo promo1">
                         <i class="fa fa-refresh"></i>
                         <p>30 Days return</p>
                     </div>
                 </div>
-                <div class="col-md-3 col-sm-6">
+                <div class="col-md-3 col-xs-6">
                     <div class="single-promo promo2">
                         <i class="fa fa-truck"></i>
                         <p>Free shipping</p>
                     </div>
                 </div>
-                <div class="col-md-3 col-sm-6">
+                <div class="col-md-3 col-xs-6">
                     <div class="single-promo promo3">
                         <i class="fa fa-lock"></i>
                         <p>Secure payments</p>
                     </div>
                 </div>
-                <div class="col-md-3 col-sm-6">
+                <div class="col-md-3 col-xs-6">
                     <div class="single-promo promo4">
                         <i class="fa fa-gift"></i>
                         <p>New products</p>
@@ -72,12 +59,15 @@
 <script>
 $(function(){
     $(document).scroll(function() {
-        var nowTop = parseInt($(window).scrollTop());
-        if(nowTop>60){
-            $('.navbar-muushop').addClass('white-nav');
-        }else{
-            $('.navbar-muushop').removeClass('white-nav');
-        }
+        //var windowWidth = $(window).width();
+        //if(windowWidth > 768){
+            var nowTop = parseInt($(window).scrollTop());
+            if(nowTop>60){
+                $('.navbar-muushop').addClass('white-nav');
+            }else{
+                $('.navbar-muushop').removeClass('white-nav');
+            }
+        //}
     });
 });
 </script>
