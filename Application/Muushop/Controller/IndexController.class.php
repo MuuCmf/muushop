@@ -109,11 +109,9 @@ class IndexController extends PublicController {
 	 */
 	public function search($page = 1, $r = 24){
 
-		$key = I('post.key','','text');
+		$keyword = I('post.keyword','','text');
 
-
-
-		$map['title'] = array('LIKE',$key);
+		$map['title'] = array('like',$keyword.'%');
 		$map['status']=1;
 
 		/* 获取当前分类下列表 */
@@ -123,7 +121,7 @@ class IndexController extends PublicController {
         	$val['price'] = price_convert('yuan',$val['price']);
         }
         unset($val);
-
+        $this->assign('keyword',$keyword);
         $this->assign('list', $list);
         $this->assign('totalCount',$totalCount);
 		$this->display();

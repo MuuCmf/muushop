@@ -4,9 +4,8 @@
 		background:rgba(0,0,0,0.6);
 	}
 }
-.search-box {
+.muushop-search-box {
 	position:relative;
-	width:500px;
 	margin:10px auto;
 	padding-top:60px;
 
@@ -23,30 +22,41 @@
 
 		.input-group-btn {
 			button {
+				background:#f60;
 				height:48px;
 				font-size:18px;
 				line-height:32px;
-				color:#00CC99;
+				color:#fff;
 				border:3px solid #f6f6f6;
+				border-radius:0 10px 10px 0;
 			}
 		}
 	}
 }
 .search-close {
-	position:absolute;
 	display:block;
-	width:100%;
-	bottom:60px;
-	left:0;
 	padding:15px;
 	text-align:center;
 
 
 	.close {
-		padding:20px;
+		padding:10px;
 		background:#fff;
 		border-radius:50%;
 		float:none;
 		font-size:32px;
+		line-height:32px;
+		color:#666;
+		width:60px;
+		height:60px;
+		opacity: 1;
+	}
+}
+
+.search-tit {
+	margin:0 10px 10px 10px;
+
+	span {
+		color:#f60;
 	}
 }

@@ -4,15 +4,12 @@
 </block>
 <block name="body">
 <div id="main-container" class="container">
-    <div class="muushop_main_nav">
-        
-    </div>
     <div class="row">
-        <div class="">条件查询</div>
-        <div class="product-list">
+        <div class="search-tit common_box">条件查询:<span>{$keyword}</span></div>
+        <div class="product-list clearfix">
             <notempty name="list">
                 <volist name="list" id="data">
-                    <div class="col-md-4">
+                    <div class="col-md-4 col-xs-6">
                         <div class="product-box">
                             <a href="{:U('Muushop/index/product',array('id'=>$data['id']))}" target="_blank">
                                 <div class="img">
