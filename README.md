@@ -1,6 +1,8 @@
 ## MuuShop轻量B2C商城框架
 
 MuuShop基于MuuCmf开发，整合了支付，物流查询、订单管理、优惠卷、积分返现......完全解耦，可作为ThinkPhp的独立模块，只需整合用户系统（处理下Uid的事儿），前端响应式，并可分别开发桌面版、移动版。
+
+
 移动版
 - ![输入图片说明](https://gitee.com/uploads/images/2018/0401/143956_08d9ebd9_378490.png "test.hoomuu.cn-muushop(iPhone 6).png")
 
