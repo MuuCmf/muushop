@@ -2,6 +2,13 @@
 
 MuuShop基于MuuCmf开发，整合了支付，物流查询、订单管理、优惠卷、积分返现......完全解耦，可作为ThinkPhp的独立模块，只需整合用户系统（处理下Uid的事儿），前端响应式，并可分别开发桌面版、移动版。
 
+![输入图片说明](https://gitee.com/uploads/images/2018/0401/143956_08d9ebd9_378490.png "test.hoomuu.cn-muushop(iPhone 6).png")![输入图片说明](https://gitee.com/uploads/images/2018/0401/144306_6d754022_378490.jpeg "test.hoomuu.cn.jpg")
+
+
+
+
+
+
 ## MuuCmf后端管理框架
 
 MuuCmf PHP管理框架是一个将CMS和Framework两个概念完美结合的管理系统，基于PHP+MYSQL开发，提供了注册登录、Auth授权、用户管理、运营管理、消息机制、积分管理、行为日志、数据统计、模块装卸、插件机制等诸多功能，并提供建议的安装程序。开发者只需要专注于自身业务系统的开发，或通过MuuCmf应用商店下载你需要的模块实现更快部署...
