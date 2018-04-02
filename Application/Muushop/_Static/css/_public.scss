@@ -81,6 +81,18 @@ body {
 	    	float: left;
 			line-height:50px;
 			list-style: none;
+
+			.dropdown-menu li {
+				float:none;
+
+				a {
+
+					&:hover {
+						background:#f60;
+						color:#fff;
+					}
+				}
+			}
 		}
 		li > a {
 		    display: block;

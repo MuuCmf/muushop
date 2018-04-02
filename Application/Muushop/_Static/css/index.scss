@@ -72,6 +72,18 @@ $zMessage: 5050;
             a {
                 color:#fff;
             }
+
+            .dropdown-menu li {
+                float:none;
+
+                a {
+                    color:#666;
+                    &:hover {
+                        background:#f60;
+                        color:#fff!important;
+                    }
+                }
+            }
         }
     }
 
@@ -126,6 +138,18 @@ $zMessage: 5050;
         position: relative;
         float: left;
         line-height:50px!important;
+
+        .dropdown-menu li {
+            float:none;
+
+            a {
+                
+                &:hover {
+                    background:#f60;
+                    color:#fff!important;
+                }
+            }
+        }
     }
 
     li > a{
