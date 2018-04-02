@@ -117,18 +117,18 @@ function getRootUrl()
  * @param int $type 图片的类型，qiniu 七牛，local 本地, sae SAE
  * @param bool $replace 是否强制替换
  * @return string
- * @auth 陈一枭
+ * @auth 陈一枭 大蒙
  */
 function getThumbImageById($cover_id, $width = 100, $height = 'auto', $type = 0, $replace = false)
 {
-
+    //存在cover_id为空时，写入public/images路径的bug待修复
     $picture = S('picture_' . $cover_id);
     if (empty($picture)) {
         $picture = M('Picture')->where(array('status' => 1))->getById($cover_id);
         S('picture_' . $cover_id, $picture);
     }
     if (empty($picture)) {
-        $attach = getThumbImage('Public/images/nopic.png', $width, $height, $type, $replace);
+        $attach = getThumbImage('Uploads/Picture/nopic.png', $width, $height, $type, $replace);
         return get_pic_src($attach['src']);
     }
 
