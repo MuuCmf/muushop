@@ -7,15 +7,9 @@ use Common\Controller\CommonController;
 
 class BaseController extends CommonController {
 
-
-
 	function _initialize()
 	{
 		parent::_initialize();
-		//微信浏览器更换模板
-		//if(isWeixinBrowser()){//微信浏览器返回
-		//	$this->theme('mobile');
-		//}
 		//商城配置
 		$shopConfig = array(
 			'title'=>modC('MUUSHOP_SHOW_TITLE', '', 'Muushop'),
@@ -34,7 +28,7 @@ class BaseController extends CommonController {
 	private function custom_nav(){
 
 		$custom_nav = S('custom_nav');
-		if($custom_nav===false || $custom_nav==''){
+		if($custom_nav===false || $custom_nav=='' || empty($custom_nav)){
 			$custom_nav = D('MuushopNav')->cache('custom_nav')->order('sort asc,id asc')->select();
 			foreach($custom_nav as &$v){
 				if(is_numeric($v['url']) || preg_match("/^\d*$/",$v['url'])){
@@ -51,7 +45,7 @@ class BaseController extends CommonController {
 				}
 			}
 			unset($v);
-			$custom_nav = S('custom_nav',$custom_nav,3600);
+			S('custom_nav',$custom_nav,3600);
 		}
 		return $custom_nav;
 	}

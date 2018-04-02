@@ -63,28 +63,31 @@ class MuushopProductCatsModel extends Model{
 	 */
 	public function get_product_cats($option)
 	{
-		
-		if(isset($option['parent_id']) && $option['parent_id'] >= 0) {
-			$where_arr[] = 'parent_id = '.$option['parent_id'];
-		}
-		if(isset($option['status'])) {
-			$where_arr[] = 'status = '.$option['status'];
-		}
-		$where_str ='';
-		if(!empty($where_arr)) {
-			$where_str .= implode(' and ', $where_arr);
-		}
-		$ret['list'] = $this->where($where_str)->order('sort asc, create_time')->page($option['page'],$option['r'])->select();
-		$ret['count'] = $this->where($where_str)->count();
-		//获取父级分类信息
-		if(!empty($option['with_parent_info']) && $ret['list']) {
-			foreach($ret['list'] as $k => $c) {
-				if($c['parent_id']) {
-					$ret['list'][$k]['parent_cat'] = $this->get_product_cat_by_id($c['parent_id']);
+		$ret = S('product_cats');
+		if(empty($ret)){
+			if(isset($option['parent_id']) && $option['parent_id'] >= 0) {
+				$where_arr[] = 'parent_id = '.$option['parent_id'];
+			}
+			if(isset($option['status'])) {
+				$where_arr[] = 'status = '.$option['status'];
+			}
+			$where_str ='';
+			if(!empty($where_arr)) {
+				$where_str .= implode(' and ', $where_arr);
+			}
+			$ret['list'] = $this->where($where_str)->order('sort asc, create_time')->page($option['page'],$option['r'])->select();
+			$ret['count'] = $this->where($where_str)->count();
+			//获取父级分类信息
+			if(!empty($option['with_parent_info']) && $ret['list']) {
+				foreach($ret['list'] as $k => $c) {
+					if($c['parent_id']) {
+						$ret['list'][$k]['parent_cat'] = $this->get_product_cat_by_id($c['parent_id']);
+					}
 				}
 			}
+			S('product_cats',$ret,3600);
 		}
-		return $ret;
+		return $ret;	
 	}
 	/**
 	 * 获取分类信息
