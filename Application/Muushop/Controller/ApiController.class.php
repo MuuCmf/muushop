@@ -149,7 +149,7 @@ class ApiController extends Controller {
 	public function cancel_order()
 	{
 		if (IS_POST &&  _need_login()){
-			if (!($order_id = I('id', false, 'intval'))
+			if (!($order_id = I('id', 0, 'intval'))
 				|| !($order = $this->order_model->get_order_by_id($order_id))
 				|| !($order['user_id'] == is_login())
 			){

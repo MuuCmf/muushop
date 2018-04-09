@@ -3,6 +3,58 @@
     margin-bottom:10px;
 }
 /*用户中心首页*/
+.side-menu {
+
+}
+@media screen and (max-width:768px){
+    .side-menu {
+        background:none;
+        ul {
+            display:block;
+            margin:0 -10px;
+
+
+            li {
+                display:block;
+                float:left!important;
+                width:25%;
+                padding-right: 10px;
+                padding-left:10px;
+                text-align:center;
+                box-sizing: border-box;
+
+                a {
+                    color:#fff;
+                    display:block;
+
+                    span {
+                        display:block;
+                        height:40px;
+                        overflow:hidden;
+                    }
+
+                    i {
+                        color:#fff!important;
+                    }
+
+                }
+                .menu-1 {
+                    background:#f60;
+                }
+                .menu-2 {
+                    background:#38b03f;
+                }
+                .menu-3 {
+                    background:#ea644a;
+                }
+                .menu-4 {
+                    background:#bd7b46;
+                }
+            }
+        }
+
+    }
+}
 
 .orders-num-content {
 
@@ -55,17 +107,6 @@
         margin-bottom:10px;
         box-shadow: 0 1px 2px rgba(0,0,0,0.05);
         border-radius: 2px;
-        -webkit-transition: all 0.4s ease;
-        transition: all 0.4s ease;
-
-        &:hover{
-            -webkit-box-shadow: 0 8px 15px rgba(0, 0, 0, 0.15);
-            -moz-box-shadow: 0 8px 15px rgba(0, 0, 0, 0.15);
-            box-shadow: 0 8px 15px rgba(0, 0, 0, 0.15);
-            -webkit-transform: translate3d(0, -2px, 0);
-            -moz-transform: translate3d(0, -2px, 0);
-            transform: translate3d(0, -2px, 0);
-        }
 
         .order-base-info {
             padding:5px;
@@ -232,224 +273,10 @@
 /*我的地址end*/
 
 /*我的订单*/
-table {
-    display: table;
-    border-collapse: separate;
-    border-spacing: 2px;
-    border-color: grey;
-    width:100%;
-}
 
-table {
-    border-collapse: collapse;
-}
-
-thead {
-    display: table-header-group;
-    vertical-align: middle;
-    border-color: inherit;
-}
-
-thead th {
-    height: 32px;
-    line-height: 32px;
-    text-align: center;
-    background: #f5f5f5;
-    color: #666;
-    font-weight: 400;
-}
-
-tbody {
-    display: table-row-group;
-    vertical-align: middle;
-    border-color: inherit;
-}
-
-tbody td {
-    border: 1px solid #e5e5e5;
-}
-
-a.ftx-03, a.ftx03, div.ftx-03, div.ftx03, span.ftx-03, span.ftx03 {
-    color: #aaa;
-}
 
 /*订单*/
-.order-tb .ordertime-cont {
-    position: relative;
-    float: left;
-    z-index: 10;
-    width: 138px;
-    cursor: pointer;
-}
-.order-tb .ordertime-cont .time-txt {
-    position: relative;
-    height: 30px;
-    line-height: 30px;
-    text-align: left;
-    padding-left: 20px;
-    padding-right: 12px;
-    border: 1px solid #f5f5f5;
-}
-.order-tb .ordertime-cont .time-list {
-    position: absolute;
-    left: 0;
-    top: 30px;
-    z-index: 2;
-    display: none;
-    width: 136px;
-    background: #fff;
-    border: 1px solid #f5f5f5;
-    border-top: 0;
-}
-.order-tb .ordertime-cont .time-list li {
-    height: 30px;
-    line-height: 30px;
-    text-align: left;
-}
-.order-tb .order-detail-txt {
-    display: inline-block;
-    vertical-align: middle;
-}
-.order-tb .deal-state-cont {
-    position: relative;
-    z-index: 10;
-    cursor: pointer;
-}
-.order-tb .deal-state-cont .state-txt {
-    position: relative;
-    height: 30px;
-    line-height: 30px;
-    text-align: center;
-    border: 1px solid #f5f5f5;
-}
-.order-tb .deal-state-cont .state-list {
-    position: absolute;
-    left: 0;
-    top: 30px;
-    z-index: 2;
-    display: none;
-    width: 96px;
-    background: #fff;
-    border: 1px solid #f5f5f5;
-    border-top: 0;
-}
 
-.order-tb .deal-state-cont .state-list li {
-    height: 30px;
-    line-height: 30px;
-    text-align: left;
-}
-
-.order-tb .sep-row {
-    height: 20px;
-}
-.order-tb .tr-th {
-    background: #f5f5f5;
-    height: 31px;
-    line-height: 31px;
-    color: #aaa;
-    overflow: hidden;
-}
-.order-tb .tr-th span {
-    float: left;
-    height: 18px;
-    line-height: 18px;
-    padding: 2px 0 0;
-    _display: inline;
-}
-.order-tb .tr-th .dealtime {
-    margin-right: 30px;
-    _margin-right: 15px;
-    margin-left:20px;
-    _margin-left:20px;
-    font-family: verdana;
-}
-.order-tb .tr-bd {
-    text-align: center;
-    vertical-align: top;
-}
-.order-tb .tr-bd td {
-    padding: 14px 0;
-}
-.order-tb .sep-row td {
-    border: 0;
-}
-.order-tb .goods-box {
-	border-bottom:1px solid #f5f5f5;
-	padding:5px 0;
-}
-
-.order-tb .goods-box:last-child{
-	border-bottom: 0;
-}
-.order-tb .goods-item {
-    width: 340px;
-    margin-right: 74px;
-}
-.order-tb .goods-item {
-    display: inline-block;
-    display: block;
-    float: left;
-    width: 340px;
-    margin-right: 74px;
-}
-.order-tb .goods-item .p-img {
-    float: left;
-    width: 60px;
-    height: 60px;
-    border: 1px solid #efefef;
-    margin: 0 14px;
-    _display: inline;
-    overflow:hidden;
-}
-.order-tb .goods-item .p-msg {
-    float: left;
-    width: 160px;
-}
-.order-tb .goods-item .p-msg {
-    width: 240px;
-}
-.order-tb .goods-item .p-name {
-    color: #333;
-    text-align: left;
-
-    .a-link {
-        display:block;
-        font-size:14px;
-        padding:0 5px;
-        margin:2px 0;
-    }
-}
-.order-tb .goods-number {
-    float: left;
-    width: 40px;
-    text-align: left;
-    color: #aaa;
-    font-family: verdana;
-}
-.order-tb .goods-repair {
-    width: 104px;
-}
-.order-tb .goods-box .goods-item .sku_box {
-    
-
-    .sku_li_span {
-        border:1px solid #ddd;
-        background:#f6f6f6;
-        border-radius:2px;
-        font-size:12px;
-        padding:5px;
-        margin-right:5px;
-    }
-}
-.order-tb .operate {
-    padding:5px;
-}
-.goods-repair {
-    float: right;
-    width: 84px;
-    text-align: center;
-}
 /*收货人*/
 .order-tb .tooltip {
     position: relative;

@@ -92,7 +92,7 @@ $(function(){
 				}
 				//组装html代码
 		  		var html_str = '';
-              	html_str += '<div class="order-item clearfix">';
+              	html_str += '<div class="order-item row clearfix">';
               	html_str += '<div class="order-base-info clearfix"><span class="pull-left">订单号：'+value.order_no+'</span><span class="order-status pull-right">'+status+'</span></div>';
               	html_str += '<div class="col-md-9">'+
 						    '<div class="goods-box clearfix">';

@@ -256,9 +256,10 @@ class MuushopOrderLogic extends Model{
 	 */
 	public function cancal_order($order)
 	{
-		if (!in_array($order['status'], array(MuushopOrderModel::ORDER_WAIT_USER_PAY,
-		                                  	  MuushopOrderModel::ORDER_UNDER_NEGOTATION,
-		                                      MuushopOrderModel::ORDER_WAIT_SHOP_ACCEPT))
+		if (!in_array($order['status'], array(MuushopOrderModel::ORDER_WAIT_USER_PAY,//待付款
+											  MuushopOrderModel::ORDER_WAIT_FOR_DELIVERY,//待发货
+		                                  	  MuushopOrderModel::ORDER_UNDER_NEGOTATION,//退货中
+		                                      MuushopOrderModel::ORDER_WAIT_SHOP_ACCEPT))//等待卖家确认
 		) {
 			$this->error_str = '错误的订单状态';
 			return false;
@@ -268,6 +269,7 @@ class MuushopOrderLogic extends Model{
 			'id' => $order['id'],
 			'status' => MuushopOrderModel::ORDER_CANCELED,
 		);
+
 		$this->startTrans();
 		if(!$this->order_model->add_or_edit_order($update))
 		{
