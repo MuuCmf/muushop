@@ -1,5 +1,5 @@
 $(function(){
-  
+  /*商品评价*/
   var assembleData = function(){
     var cData = [];
 

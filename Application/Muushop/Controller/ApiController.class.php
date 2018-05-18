@@ -277,11 +277,8 @@ class ApiController extends Controller {
 		$product_id = I('get.product_id',0,'intval');
 		$map['status'] = 1;
 		$map['product_id'] = $product_id;
-		$map['page'] = $page;
-		$map['r'] = $r;
 
-
-		$comment = $this->product_comment_model->get_product_comment_list($map);
+		$comment = $this->product_comment_model->get_list_by_page($map,$page,'create_time desc','*',$r);
 
 		foreach($comment['list'] as &$val){
 			if(empty($val['brief'])){
@@ -291,9 +288,17 @@ class ApiController extends Controller {
 			unset($val['sku'][0]);
 			$val['sku'] = array_values($val['sku']);
 			$val['create_time'] = friendlyDate($val['create_time']);
+			//读取图片
+			if($val['images']){
+                $img_arr = explode(',',$val['images']);
+                foreach ($img_arr as $k) {
+                    $val['images_small_list'][] = getThumbImageById($k,100,100);
+                    $val['images_big_list'][] = getThumbImageById($k,600,600);
+                }
+            }
 		}
 		unset($val);
-		
+
 		if($comment){
 			$result['status']=1;
 			$result['info'] = 'success';

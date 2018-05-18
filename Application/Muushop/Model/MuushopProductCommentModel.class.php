@@ -38,6 +38,18 @@ class MuushopProductCommentModel extends Model{
 		}
 	}
 
+	public function get_list_by_page($map,$page=1,$order='create_time desc',$field='*',$r=20)
+    {
+        $totalCount=$this->where($map)->count();
+        if($totalCount){
+            $list=$this->where($map)->page($page,$r)->order($order)->field($field)->select();
+        }
+
+        $ret['list']=$list;
+        $ret['totalCount']=$totalCount;
+        return $ret;
+    }
+
 	public function get_product_comment_list($option)
 	{
 		$where_str = '';
@@ -93,7 +105,6 @@ class MuushopProductCommentModel extends Model{
 	public function func_get_product_comment(&$item)
 	{
 		empty($item['user_id']) || $item['user']=query_user(array('nickname','avatar32'),$item['user_id']);
-		empty($item['images']) || $item['images']=explode(';',$item['images']);
 	}
 }
 

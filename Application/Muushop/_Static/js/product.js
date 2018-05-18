@@ -150,6 +150,25 @@ $(function(){
                     for(var k=0;k<data[i]['sku'].length;k++){
                         sku += '<span class="sku_item">'+data[i]['sku'][k]+'</span>';
                     }
+                    if(data[i]['images']){
+                        /*图片HTML*/
+                        var small_img_html = '';
+                        for(var j=0;j<data[i]['images_small_list'].length;j++){
+                            small_img_html+= '<span class="img_box"><img src='+data[i]['images_small_list'][j]+' /></span>';
+                        }
+                        var big_img_html = '';
+                        for(var h=0;h<data[i]['images_big_list'].length;h++){
+                            big_img_html+= '<span class="img_box"><img src='+data[i]['images_big_list'][h]+' /></span>';
+                        }
+
+                        var images_item_html = '<div class="images-item">'+
+                                                '<div class="small-images clearfix" data-role="images">'+small_img_html+'</div>'+
+                                                '<div class="big-images">'+big_img_html+'</div>'+
+                                                '</div>';
+                    }else{
+                        images_item_html = '';
+                    }
+
                     var html_str = '';
                         html_str = '<div class="comment-item clearfix">'+
                                    '<div class="col-xs-2">'+
@@ -161,6 +180,7 @@ $(function(){
                                    '<div class="col-xs-10">'+
                                    '<div class="score clearfix"><div class="atar_Show"><p tip="'+data[i].score+'"></p></div><span></span></div>'+
                                    '<div class="brief">'+data[i].brief+'</div>'+
+                                    images_item_html+
                                    '<div class="sku">'+sku+' <span class="create_time">'+ data[i].create_time+'</span></div>'+
                                    '</div>'+
                                    '</div>';
@@ -174,6 +194,27 @@ $(function(){
                     $(this).css("width",w);
                     $(this).parent(".atar_Show").siblings("span").text(num+"分");
                 });
+
+                //显示大图
+      
+                $('#comment').on('click','.small-images span',function(){
+                  //移除所有选框
+                  $("#comment .small-images span").removeClass('selected');
+                  //加上外框
+                  $(this).addClass('selected');
+                  //隐藏元素
+                  $(this).parent().parent().find('.big-images span').css('display','none');
+                  //获取点击的是第几个元素
+                  var n = $(this).index();
+
+                  $(this).parent().parent().find('.big-images span:eq('+n+')').css('display','block');
+                });
+
+                $('#comment').on('click','.big-images span',function(){
+                  $(this).css('display','none');
+                  $(this).parent().parent().find('.small-images span').removeClass('selected');
+                })
+
             //页码 
             var totalCount = ret.data.totalCount;
             

@@ -233,6 +233,29 @@
                     display: inline-block;
                 }
             }
+
+            .small-images {
+                margin:5px auto;
+
+                span {
+                    display:block;
+                    float:left;
+                    margin:0 5px;
+                    border:1px #ddd solid;
+                    width:80px;
+                    height:80px;
+                    overflow:hidden;
+                    cursor:pointer;
+                }
+                .selected {
+                    border:2px solid #ff0000;
+                }
+            }
+            .big-images {
+                span {
+                    display:none;
+                }
+            }
         }
     }
 }
