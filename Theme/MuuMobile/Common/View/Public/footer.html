@@ -1,20 +1,25 @@
-<footer class="footer">
-	
-	<nav class="nav nav-lg primary justified">
-        <a><i class="icon-home"></i></a>
-        <a class="active">导航</a>
-        <a>消息</a>
-        <a>我的</a>
-      </nav>
-</footer>
-<include file="Public/_system"/>
-<include file="Public/js"/>
-<block name="script"><!-- 用于加载js代码 --></block>
-<!-- 页面footer钩子 -->
-{:hook('pageFooter', 'widget')}
-<div class="hidden"><!-- 用于加载统计代码等隐藏元素 -->
-    <block name="hidden"></block>
+<div class="footer-bar">
+    <div class="text-center">
+        <div class="power-by">
+            <span>Power by <a href="http://www.muucmf.cn" target="_blank">MuuCmf</a></span>
+            <span>{:modC('COPY_RIGHT',L('_NOT_SET_NOW_'),'Config')}</span>
+            <span>{:L('_RECORD_N_')}
+            <a href="http://www.miitbeian.gov.cn/" target="_blank">
+                {:modC('ICP',L('_NOT_SET_NOW_'),'Config')} 
+            </a>
+            </span>
+        </div>
+    </div>
 </div>
 <div class="hidden">
     {:C('COUNT_CODE')}
+</div>
+<include file="Public/js"/>
+<block name="script"><!-- 用于加载js代码 --></block>
+<!-- 页面footer钩子，一般用于加载插件JS文件和JS代码 -->
+{:hook('pageFooter', 'widget')}
+<!-- 调用消息部件-->
+{:W('Common/Message/render')}
+<div class="hidden"><!-- 用于加载统计代码等隐藏元素 -->
+    <block name="hidden"></block>
 </div>
