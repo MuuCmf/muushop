@@ -46,7 +46,10 @@ class IndexController extends PublicController {
 	{
 		$this->display();
 	}
-
+	/**
+	 * 商品列表
+	 * @return [type] [description]
+	 */
 	public function cats()
 	{
 		//排序方式：
@@ -127,7 +130,10 @@ class IndexController extends PublicController {
 		$this->display();
 	}
 
-
+	/**
+	 * 商品详情页
+	 * @return [type] [description]
+	 */
 	public function product()
 	{
 		$id = I('id', '', 'intval');

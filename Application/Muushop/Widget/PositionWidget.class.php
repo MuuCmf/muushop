@@ -21,10 +21,10 @@ class PositionWidget extends Controller{
         $title = modC('MUUSHOP_POS_'.$pos.'_TITLE','','Muushop');
         $description = modC('MUUSHOP_POS_'.$pos.'DESCRIPTION','','Muushop');
 
-        $num = modC('MUUSHOP_POS_'.$pos.'COUNT', 4, 'Muushop');
+        $num = modC('MUUSHOP_POS_'.$pos.'COUNT', 8, 'Muushop');
         $field = modC('MUUSHOP_POS_'.$pos.'ORDER_FIELD', 'click_cnt', 'Muushop');
         $order = modC('MUUSHOP_POS_'.$pos.'ORDER_TYPE', 'desc', 'Muushop');
-        $cache = modC('ARTICLES_SHOW_CACHE_TIME', 600, 'Muushop');
+        $cache = modC('MUUSHOP_POS_'.$pos.'CACHE_TIME', 600, 'Muushop');
         
         
         $lists = S('product_pos_'.$pos.'_data');
@@ -40,7 +40,7 @@ class PositionWidget extends Controller{
              * @return array             数据列表
              */
             $lists=D('Muushop/MuushopProduct')->position($pos,$cat_id,$num,$field . ' ' . $order);
-        S('product_pos_'.$pos.'_data',$lists,$cache);
+            S('product_pos_'.$pos.'_data',$lists,$cache);
         }
         $this->assign('title', $title);
         $this->assign('descriptin', $description);      

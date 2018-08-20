@@ -93,7 +93,7 @@ class MuushopProductModel extends Model {
 	/**
      * 获取推荐位数据列表
      * @param $pos 推荐位ID 如：1-热卖，2-推荐，4-新品
-     * @param null $category
+     * @param null $cat_id
      * @param $limit
      * @param bool $field
      * @return mixed
@@ -105,7 +105,7 @@ class MuushopProductModel extends Model {
     	if($pos){
     		$map['_string']='FIND_IN_SET('.$pos.',position)';	
     	}
-    	if($category){
+    	if($cat_id){
     		$map['cat_id'] = $cat_id;
     	}
         
